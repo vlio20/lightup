@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"lightup/src/db"
+	"lightup/src/router"
 )
 
 func main() {
-	fmt.Println(db.Hello())
+	db.InitDB()
+	router.InitRouter()
 }
