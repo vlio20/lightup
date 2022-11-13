@@ -11,9 +11,9 @@ func Init(router *gin.RouterGroup) {
 }
 
 func createFeatureFlag(c *gin.Context) {
-	var feature_flag CreateFeatureFlagDto
+	feature_flag, err := router_utils.HandleBounding[CreateFeatureFlagDto](c)
 
-	if router_utils.HandleBounding(c, &feature_flag) != nil {
+	if err != nil {
 		return
 	}
 

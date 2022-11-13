@@ -6,15 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleBounding(c *gin.Context, obj any) any {
-	if err := c.ShouldBind(&obj); err != nil {
+func HandleBounding[T interface{}](c *gin.Context) (T, error) {
+	var dto T
+
+	if err := c.ShouldBind(&dto); err != nil {
 		c.JSON(400, gin.H{
 			"message": extractValidationError(err.Error()),
 		})
-		return err
+		return dto, err
 	}
 
-	return nil
+	return dto, nil
 }
 
 func extractValidationError(msg string) string {
