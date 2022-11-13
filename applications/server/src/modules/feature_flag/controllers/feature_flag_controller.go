@@ -7,18 +7,12 @@ import (
 )
 
 func Init(router *gin.RouterGroup) {
-	router.POST("/featureFlags", createFeatureFlag)
+	router.POST("/featureFlags", router_utils.HandleBounding(createFeatureFlag))
 }
 
-func createFeatureFlag(c *gin.Context) {
-	feature_flag, err := router_utils.HandleBounding[CreateFeatureFlagDto](c)
-
-	if err != nil {
-		return
-	}
-
+func createFeatureFlag(c *gin.Context, dto CreateFeatureFlagDto) {
 	c.JSON(200, gin.H{
-		"name":        feature_flag.Name,
-		"description": feature_flag.Description,
+		"name":        dto.Name,
+		"description": dto.Description,
 	})
 }
