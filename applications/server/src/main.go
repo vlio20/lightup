@@ -1,7 +1,7 @@
 package main
 
 import (
-	"lightup/src/db"
+	"lightup/src/common/db"
 	"lightup/src/router"
 )
 

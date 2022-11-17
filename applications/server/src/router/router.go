@@ -1,7 +1,7 @@
 package router
 
 import (
-	feature_flag_ctrl "lightup/src/modules/feature_flag/controllers"
+	"lightup/src/modules/feature_flag/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +11,7 @@ func InitRouter() {
 
 	v1 := route.Group("api/v1")
 	{
-		feature_flag_ctrl.Init(v1)
+		controller.Init(v1)
 	}
 
 	route.GET("/ping", func(c *gin.Context) {
