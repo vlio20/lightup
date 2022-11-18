@@ -22,9 +22,11 @@ func GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
 
 func CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
 	entity := &dal.FeatureFlagEntity{
+		BaseEntity:  *db.GetBaseEntity(),
 		Name:        input.Name,
 		Description: input.Description,
-		BaseEntity:  *db.GetBaseEntity(),
+		Archived:    input.Archived,
+		Config:      input.Config,
 	}
 
 	return getFeatureFlegRepo().Add(entity)

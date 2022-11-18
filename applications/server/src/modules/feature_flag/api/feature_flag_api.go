@@ -26,6 +26,8 @@ func CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEnt
 	input := model.CreateFeatureFlagDto{
 		Name:        createDto.Name,
 		Description: createDto.Description,
+		Archived:    false,
+		Config:      createDto.Config,
 	}
 	entity, err := bl.CreateFeatureFlag(&input)
 
