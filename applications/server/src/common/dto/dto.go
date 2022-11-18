@@ -14,7 +14,7 @@ type BaseEntityDto struct {
 
 func GetResourceFromEntity(entity *db.BaseEntity) *BaseEntityDto {
 	return &BaseEntityDto{
-		ID:        entity.ID.ToString(),
+		ID:        entity.ID.Hex(),
 		CreatedAt: entity.CreatedAt,
 		UpdatedAt: entity.UpdatedAt,
 	}

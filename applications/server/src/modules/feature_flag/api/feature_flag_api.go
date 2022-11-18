@@ -34,6 +34,6 @@ func CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEnt
 	}
 
 	return &app_dto.CreatedEntityDto{
-		ID: string(entity.ID),
+		ID: entity.ID.Hex(),
 	}, nil
 }
