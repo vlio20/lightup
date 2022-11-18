@@ -14,14 +14,16 @@ type CreateFeatureFlagDto struct {
 
 type FeatureFlagDto struct {
 	dto.BaseEntityDto
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string                  `json:"name"`
+	Description string                  `json:"description"`
+	Config      model.FeatureFlagConfig `json:"config"`
 }
 
 func CreateFromEntity(entity *dal.FeatureFlagEntity) *FeatureFlagDto {
 	return &FeatureFlagDto{
+		BaseEntityDto: *dto.GetResourceFromEntity(&entity.BaseEntity),
 		Name:          entity.Name,
 		Description:   entity.Description,
-		BaseEntityDto: *dto.GetResourceFromEntity(&entity.BaseEntity),
+		Config:        entity.Config,
 	}
 }
