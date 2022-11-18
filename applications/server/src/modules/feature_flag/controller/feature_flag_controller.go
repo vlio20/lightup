@@ -1,33 +1,27 @@
 package controller
 
 import (
+	"lightup/src/common/router"
 	"lightup/src/modules/feature_flag/api"
 	"lightup/src/modules/feature_flag/dto"
-	router_utils "lightup/src/utils/router"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Init(router *gin.RouterGroup) {
-	router.GET("/featureFlags/:id", getFeatureById)
-	router.POST("/featureFlags", router_utils.HandleBounding(createFeatureFlag))
+func Init(r *gin.RouterGroup) {
+	r.GET("/featureFlags/:id", router.HandleRequest(getFeatureById))
+	// router.POST("/featureFlags", router.HandleBounding(createFeatureFlag))
 }
 
-func createFeatureFlag(c *gin.Context, dto dto.CreateFeatureFlagDto) {
-	c.JSON(200, gin.H{
-		"name":        dto.Name,
-		"description": dto.Description,
-	})
-}
+// func createFeatureFlag(c *gin.Context, dto dto.CreateFeatureFlagDto) {
+// 	dto = c.JSON(200, gin.H{
+// 		"name":        dto.Name,
+// 		"description": dto.Description,
+// 	})
+// }
 
-func getFeatureById(c *gin.Context) {
+func getFeatureById(c *gin.Context) (*dto.FeatureFlagDto, error) {
 	id := c.Param("name")
-	dto, err := api.GetFeatureFlagById(id)
+	return api.GetFeatureFlagById(id)
 
-	if err != nil {
-		c.JSON(err.StatusCode, err)
-		return
-	}
-
-	c.JSON(200, dto)
 }

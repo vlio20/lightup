@@ -2,10 +2,10 @@ package main
 
 import (
 	"lightup/src/common/db"
-	"lightup/src/router"
+	"lightup/src/global"
 )
 
 func main() {
 	db.InitDB()
-	router.InitRouter()
+	global.InitRouter()
 }
