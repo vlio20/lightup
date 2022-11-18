@@ -21,5 +21,4 @@ func createFeatureFlag(c *gin.Context, createDto *dto.CreateFeatureFlagDto) (*ap
 func getFeatureFlagById(c *gin.Context) (*dto.FeatureFlagDto, error) {
 	id := c.Param("id")
 	return api.GetFeatureFlagById(id)
-
 }
