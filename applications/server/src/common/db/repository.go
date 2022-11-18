@@ -3,17 +3,40 @@ package db
 import (
 	"context"
 	"lightup/src/common/http"
-	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type EntityID string
+
+func (id EntityID) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	p, err := primitive.ObjectIDFromHex(string(id))
+	if err != nil {
+		return bsontype.Null, nil, err
+	}
+
+	return bson.MarshalValue(p)
+}
+
+func (id EntityID) ToString() string {
+	return string(id)
+}
+
 type BaseEntity struct {
-	ID        string `bson:"id"`
-	CreatedAt int64  `bson:"createdAt"`
-	UpdatedAt int64  `bson:"updatedAt"`
+	ID        EntityID `bson:"_id,omitempty"`
+	CreatedAt int64    `bson:"createdAt"`
+	UpdatedAt int64    `bson:"updatedAt"`
+}
+
+func GetBaseEntity() *BaseEntity {
+	return &BaseEntity{
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
+	}
 }
 
 type Repository[T any] struct {
@@ -28,9 +51,16 @@ func NewRepository[T any](db *mongo.Database, collection string) *Repository[T] 
 	}
 }
 
-// func (r *repository[T]) Add(entity *T, ctx context.Context) error {
-// 	return r.db.WithContext(ctx).Create(&entity).Error
-// }
+func (r *Repository[T]) Add(entity *T) (*T, error) {
+	result, err := r.Collection.InsertOne(context.Background(), entity)
+
+	if err != nil {
+		return nil, err
+	}
+
+	id := result.InsertedID.(primitive.ObjectID).Hex()
+	return r.GetById(id)
+}
 
 // func (r *repository[T]) AddAll(entity *[]T, ctx context.Context) error {
 // 	return r.db.WithContext(ctx).Create(&entity).Error
@@ -47,10 +77,9 @@ func (r *Repository[T]) GetById(id string) (*T, error) {
 
 	result := r.Collection.FindOne(context.Background(), bson.M{"_id": objectId})
 
-	err = result.Decode(entity)
+	err = result.Decode(&entity)
 
 	if err != nil {
-		log.Println("Invalid Decode")
 		return nil, err
 	}
 

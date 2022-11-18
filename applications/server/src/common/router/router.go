@@ -31,12 +31,12 @@ func HandleRequest[T interface{}](inv func(*gin.Context) (T, error)) func(*gin.C
 	}
 }
 
-func HandleBounding[T interface{}](inv func(*gin.Context, *T) (T, error)) func(*gin.Context) {
+func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R, error)) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var dto T
 
 		if err := c.ShouldBind(&dto); err != nil {
-			handleReturn[T](c, nil, &http.HttpError{
+			handleReturn[R](c, nil, &http.HttpError{
 				StatusCode:    400,
 				Message:       extractValidationError(err.Error()),
 				OriginalError: err,
