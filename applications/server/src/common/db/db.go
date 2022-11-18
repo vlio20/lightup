@@ -26,6 +26,7 @@ func InitDB() {
 	}
 
 	fmt.Println("Successfully connected and pinged.")
+	RunMigrations()
 }
 
 func GetDBClient() *mongo.Client {
