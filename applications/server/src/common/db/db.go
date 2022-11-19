@@ -12,29 +12,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
-var client *mongo.Client
-var getConfig = config.UnmarshalKey
-
 type dbConfig struct {
 	Host        string `mapstructure:"host"`
 	Port        int    `mapstructure:"port"`
 	User        string `mapstructure:"username"`
 	Pass        string `mapstructure:"password"`
 	MaxPoolSize uint64 `mapstructure:"maxPoolSize"`
+	DBName      string `mapstructure:"dbName"`
 }
 
-func Init() {
-	dbConfig := &dbConfig{}
-	err := getConfig("db", dbConfig)
+var client *mongo.Client
+var getConfig = config.UnmarshalKey
+var dbConf = &dbConfig{}
 
-	if err != nil {
-		panic(err)
-	}
+func Init() {
+	getConfig("db", dbConf)
 
 	clientOptions := options.ClientOptions{
-		Hosts:        []string{dbConfig.Host + ":" + strconv.Itoa(dbConfig.Port)},
-		Auth:         &options.Credential{Username: dbConfig.User, Password: dbConfig.Pass},
-		MaxPoolSize:  &dbConfig.MaxPoolSize,
+		Hosts:        []string{dbConf.Host + ":" + strconv.Itoa(dbConf.Port)},
+		Auth:         &options.Credential{Username: dbConf.User, Password: dbConf.Pass},
+		MaxPoolSize:  &dbConf.MaxPoolSize,
 		WriteConcern: writeconcern.New(writeconcern.WMajority()),
 	}
 
@@ -59,6 +56,6 @@ func GetDBClient() *mongo.Client {
 	return client
 }
 
-func GetDB(name string) *mongo.Database {
-	return client.Database(name)
+func GetDB() *mongo.Database {
+	return client.Database(dbConf.DBName)
 }

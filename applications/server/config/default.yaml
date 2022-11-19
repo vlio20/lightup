@@ -1,7 +1,9 @@
+gin:
+  mode: debug
 db:
   host: localhost
   port: 27017
   username: root
   password: root
   maxPoolSize: 20
-  name: lightup
+  dbName: lightup

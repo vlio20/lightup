@@ -1,3 +1,5 @@
+gin:
+  mode: debug
 db:
   name: lightup
   username: root

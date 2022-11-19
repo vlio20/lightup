@@ -32,8 +32,12 @@ func Get(key string) interface{} {
 	return porp
 }
 
-func UnmarshalKey(key string, rawVal interface{}) error {
-	return viper.UnmarshalKey(key, rawVal)
+func UnmarshalKey(key string, rawVal interface{}) {
+	err := viper.UnmarshalKey(key, rawVal)
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getBasePath() string {

@@ -2,13 +2,9 @@ package dal
 
 import (
 	"lightup/src/common/db"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var getDb = func() *mongo.Database {
-	return db.GetDB("lightup")
-}
+var getDb = db.GetDB
 
 type A struct {
 	A int
