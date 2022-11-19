@@ -2,7 +2,7 @@ package global
 
 import (
 	"lightup/src/common/config"
-	"lightup/src/modules/feature_flag/controller"
+	ff_ctrl "lightup/src/modules/feature_flag/controller"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,7 @@ func InitRouter() {
 
 	v1 := route.Group("api/v1")
 	{
-		controller.Init(v1)
+		ff_ctrl.New().Init(v1)
 	}
 
 	route.GET("/ping", func(c *gin.Context) {

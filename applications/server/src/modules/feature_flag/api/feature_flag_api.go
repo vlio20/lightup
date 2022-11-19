@@ -8,8 +8,18 @@ import (
 	"lightup/src/modules/feature_flag/model"
 )
 
-func GetFeatureFlagById(id string) (*dto.FeatureFlagDto, error) {
-	entity, err := bl.GetFeatureFlagById(id)
+type FeatureFlagApi struct {
+	featureFlagBl bl.FeatureFlagBl
+}
+
+func New() *FeatureFlagApi {
+	return &FeatureFlagApi{
+		featureFlagBl: bl.New(),
+	}
+}
+
+func (api *FeatureFlagApi) GetFeatureFlagById(id string) (*dto.FeatureFlagDto, error) {
+	entity, err := api.featureFlagBl.GetFeatureFlagById(id)
 
 	if err != nil {
 		return nil, err
@@ -22,14 +32,14 @@ func GetFeatureFlagById(id string) (*dto.FeatureFlagDto, error) {
 	return dto.CreateFromEntity(entity), nil
 }
 
-func CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
+func (api *FeatureFlagApi) CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
 	input := model.CreateFeatureFlagDto{
 		Name:        createDto.Name,
 		Description: createDto.Description,
 		Archived:    false,
 		Config:      createDto.Config,
 	}
-	entity, err := bl.CreateFeatureFlag(&input)
+	entity, err := api.featureFlagBl.CreateFeatureFlag(&input)
 
 	if err != nil {
 		return nil, http.GetHttpServerError(err)

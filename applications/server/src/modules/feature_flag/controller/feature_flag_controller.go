@@ -9,16 +9,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init(r *gin.RouterGroup) {
-	r.GET("/featureFlags/:id", router.HandleRequest(getFeatureFlagById))
-	r.POST("/featureFlags", router.HandleBounding(createFeatureFlag))
+type FeatureFlagController struct {
+	api *api.FeatureFlagApi
 }
 
-func createFeatureFlag(c *gin.Context, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
-	return api.CreateFeatureFlag(createDto)
+func New() *FeatureFlagController {
+	return &FeatureFlagController{
+		api: api.New(),
+	}
 }
 
-func getFeatureFlagById(c *gin.Context) (*dto.FeatureFlagDto, error) {
+func (ctrl *FeatureFlagController) Init(r *gin.RouterGroup) {
+	r.GET("/featureFlags/:id", router.HandleRequest(ctrl.getFeatureFlagById))
+	r.POST("/featureFlags", router.HandleBounding(ctrl.createFeatureFlag))
+}
+
+func (ctrl *FeatureFlagController) createFeatureFlag(c *gin.Context, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
+	return ctrl.api.CreateFeatureFlag(createDto)
+}
+
+func (ctrl *FeatureFlagController) getFeatureFlagById(c *gin.Context) (*dto.FeatureFlagDto, error) {
 	id := c.Param("id")
-	return api.GetFeatureFlagById(id)
+	return ctrl.api.GetFeatureFlagById(id)
 }

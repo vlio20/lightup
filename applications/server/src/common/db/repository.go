@@ -133,3 +133,9 @@ func (r *Repository[T]) GetById(id string) (*T, error) {
 // 	r.db.WithContext(ctx).Model(&entity).Where(&params).Count(&count)
 // 	return count
 // }
+
+type IRepository[T any] interface {
+	Add(entity *T) (*T, error)
+	GetByObjectId(objectId *primitive.ObjectID) (*T, error)
+	GetById(id string) (*T, error)
+}

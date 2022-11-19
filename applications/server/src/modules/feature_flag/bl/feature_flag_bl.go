@@ -2,25 +2,33 @@ package bl
 
 import (
 	"lightup/src/common/db"
+	"lightup/src/common/log"
 	"lightup/src/modules/feature_flag/dal"
 	"lightup/src/modules/feature_flag/model"
 )
 
-var featureFlagRepo *dal.FeatureFlagRepo
+type FeatureFlagImpl struct {
+	log             log.Logger
+	FeatureFlagRepo *dal.FeatureFlagRepo
+}
 
-var getFeatureFlegRepo = func() *dal.FeatureFlagRepo {
-	if featureFlagRepo == nil {
-		featureFlagRepo = dal.NewFeatureFlagRepository()
+type FeatureFlagBl interface {
+	GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error)
+	CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error)
+}
+
+func New() FeatureFlagBl {
+	return &FeatureFlagImpl{
+		log:             log.GetLogger("FeatureFlagBl"),
+		FeatureFlagRepo: dal.NewFeatureFlagRepository(),
 	}
-
-	return featureFlagRepo
 }
 
-func GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
-	return getFeatureFlegRepo().GetById(id)
+func (bl *FeatureFlagImpl) GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
+	return bl.FeatureFlagRepo.GetById(id)
 }
 
-func CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
 	entity := &dal.FeatureFlagEntity{
 		BaseEntity:  *db.GetBaseEntity(),
 		Name:        input.Name,
@@ -29,5 +37,5 @@ func CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntit
 		Config:      input.Config,
 	}
 
-	return getFeatureFlegRepo().Add(entity)
+	return bl.FeatureFlagRepo.Add(entity)
 }

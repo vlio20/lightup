@@ -6,10 +6,6 @@ import (
 
 var getDb = db.GetDB
 
-type A struct {
-	A int
-}
-
 type FeatureFlagRepo struct {
 	db.Repository[FeatureFlagEntity]
 }
