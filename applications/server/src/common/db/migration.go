@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
-	"lightup/src/common/db/migrations"
+	"lightup/src/common/db/migration"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,11 +12,13 @@ import (
 var getDb = func() *mongo.Database {
 	return client.Database("lightup")
 }
-var migrationsList []migrations.Migration
+var migrationsList = []migration.Migration{
+	*migration.CreateMigrationsCollection,
+	*migration.CreateFeatureFlagMigration,
+}
 
 func RunMigrations() {
 	col := getDb().Collection("migration")
-	registerMigration()
 
 	for _, migration := range migrationsList {
 		if !checkIfMigrationExist(col, migration.Name) {
@@ -27,13 +29,6 @@ func RunMigrations() {
 			fmt.Println("Migration already exists: ", migration.Name)
 		}
 	}
-}
-
-func registerMigration() {
-	migrationsList = append(migrationsList,
-		*migrations.CreateMigrationsCollection,
-		*migrations.CreateFeatureFlagMigration,
-	)
 }
 
 func checkIfMigrationExist(col *mongo.Collection, migtationName string) bool {
