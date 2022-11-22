@@ -19,9 +19,9 @@ jobs:
           go-version: 1.19
 
       - name: Build Application server
-        working-directory: ./applications/server/src
-        run: go build .
+        working-directory: ./applications/server
+        run: go build ./src
       
       - name: Unitest Application server
-        working-directory: ./applications/server/src
-        run: go test
+        working-directory: ./applications/server
+        run: go test -v ./src/...
