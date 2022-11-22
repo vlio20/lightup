@@ -16,6 +16,8 @@ type FeatureFlagDto struct {
 	dto.BaseEntityDto
 	Name        string                  `json:"name"`
 	Description string                  `json:"description"`
+	ServiceID   string                  `json:"serviceId"`
+	Archived    bool                    `json:"archived"`
 	Config      model.FeatureFlagConfig `json:"config"`
 }
 
@@ -25,5 +27,7 @@ func CreateFromEntity(entity *dal.FeatureFlagEntity) *FeatureFlagDto {
 		Name:          entity.Name,
 		Description:   entity.Description,
 		Config:        entity.Config,
+		ServiceID:     entity.ServiceID.Hex(),
+		Archived:      entity.Archived,
 	}
 }

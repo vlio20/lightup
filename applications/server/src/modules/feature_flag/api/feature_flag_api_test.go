@@ -4,6 +4,7 @@ import (
 	"errors"
 	"lightup/src/common/db"
 	"lightup/src/modules/feature_flag/dal"
+	ff_dto "lightup/src/modules/feature_flag/dto"
 	"lightup/src/modules/feature_flag/model"
 	"testing"
 
@@ -13,7 +14,7 @@ import (
 )
 
 var ffMock = genFeatureFlagEntity()
-var notFoundError = errors.New("not found")
+var errMock = errors.New("not found")
 
 type FeatureFlagBlMock struct {
 }
@@ -23,7 +24,7 @@ func (bl *FeatureFlagBlMock) GetFeatureFlagById(id string) (*dal.FeatureFlagEnti
 		return ffMock, nil
 	}
 
-	return nil, notFoundError
+	return nil, errMock
 }
 
 func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
@@ -54,7 +55,7 @@ func TestGetFeatureFlag_whenFound_returnDto(t *testing.T) {
 	res, err := ffApi.GetFeatureFlagById(ffMock.ID.Hex())
 
 	assert.Nil(t, err)
-	assert.Equal(t, res.ID, ffMock.ID.Hex())
+	comperEntityAndDto(t, ffMock, res)
 }
 
 func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
@@ -64,6 +65,15 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 
 	res, err := ffApi.GetFeatureFlagById("123")
 
-	assert.Equal(t, err, notFoundError)
+	assert.Equal(t, err, errMock)
 	assert.Nil(t, res)
+}
+
+func comperEntityAndDto(t *testing.T, entity *dal.FeatureFlagEntity, dto *ff_dto.FeatureFlagDto) {
+	assert.Equal(t, entity.ID.Hex(), dto.ID)
+	assert.Equal(t, entity.ServiceID.Hex(), dto.ServiceID)
+	assert.Equal(t, entity.Name, dto.Name)
+	assert.Equal(t, entity.Description, dto.Description)
+	assert.Equal(t, entity.Archived, dto.Archived)
+	assert.Equal(t, entity.Config, dto.Config)
 }
