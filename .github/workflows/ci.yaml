@@ -19,7 +19,7 @@ jobs:
           go-version: 1.19
 
       - name: Build Application server
-        working-directory: ./applicationa/server
+        working-directory: ./applications/server
         run: go build .
       
       - name: Unitest Application server
