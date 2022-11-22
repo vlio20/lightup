@@ -1,23 +1,33 @@
 package api
 
 import (
+	"errors"
 	"lightup/src/common/db"
 	"lightup/src/modules/feature_flag/dal"
 	"lightup/src/modules/feature_flag/model"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+var ffMock = genFeatureFlagEntity()
+var notFoundError = errors.New("not found")
 
 type FeatureFlagBlMock struct {
 }
 
 func (bl *FeatureFlagBlMock) GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
-	return genFeatureFlagEntity(), nil
+	if id == ffMock.ID.Hex() {
+		return ffMock, nil
+	}
+
+	return nil, notFoundError
 }
 
 func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
-	return genFeatureFlagEntity(), nil
+	return ffMock, nil
 }
 
 func genFeatureFlagEntity() *dal.FeatureFlagEntity {
@@ -26,8 +36,8 @@ func genFeatureFlagEntity() *dal.FeatureFlagEntity {
 			ID: primitive.NewObjectID(),
 		},
 		ServiceID:   primitive.NewObjectID(),
-		Name:        "asdasd",
-		Description: "asdasd",
+		Name:        "name",
+		Description: "description",
 		Archived:    false,
 		Config: model.FeatureFlagConfig{
 			Identifier: "id",
@@ -36,18 +46,24 @@ func genFeatureFlagEntity() *dal.FeatureFlagEntity {
 	}
 }
 
-func TestCreateFeatureFlag(t *testing.T) {
-	tested := &FeatureFlagApi{
+func TestGetFeatureFlag_whenFound_returnDto(t *testing.T) {
+	ffApi := &FeatureFlagApi{
 		featureFlagBl: &FeatureFlagBlMock{},
 	}
 
-	res, err := tested.featureFlagBl.GetFeatureFlagById("234")
+	res, err := ffApi.GetFeatureFlagById(ffMock.ID.Hex())
 
-	if err != nil {
-		t.Error(err)
+	assert.Nil(t, err)
+	assert.Equal(t, res.ID, ffMock.ID.Hex())
+}
+
+func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
+	ffApi := &FeatureFlagApi{
+		featureFlagBl: &FeatureFlagBlMock{},
 	}
 
-	if res.ID.Hex() == "" {
-		t.Error("Invalid feature flag id")
-	}
+	res, err := ffApi.GetFeatureFlagById("123")
+
+	assert.Equal(t, err, notFoundError)
+	assert.Nil(t, res)
 }

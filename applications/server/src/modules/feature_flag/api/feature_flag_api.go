@@ -42,7 +42,7 @@ func (api *FeatureFlagApi) CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto
 	entity, err := api.featureFlagBl.CreateFeatureFlag(&input)
 
 	if err != nil {
-		return nil, http.GetHttpServerError(err)
+		return nil, err
 	}
 
 	return &app_dto.CreatedEntityDto{

@@ -24,11 +24,11 @@ func New() FeatureFlagBl {
 	}
 }
 
-func (bl *FeatureFlagImpl) GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
-	return bl.FeatureFlagRepo.GetById(id)
+func (impl *FeatureFlagImpl) GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
+	return impl.FeatureFlagRepo.GetById(id)
 }
 
-func (bl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
+func (impl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
 	entity := &dal.FeatureFlagEntity{
 		BaseEntity:  *db.GetBaseEntity(),
 		Name:        input.Name,
@@ -37,5 +37,5 @@ func (bl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto) 
 		Config:      input.Config,
 	}
 
-	return bl.FeatureFlagRepo.Add(entity)
+	return impl.FeatureFlagRepo.Add(entity)
 }
