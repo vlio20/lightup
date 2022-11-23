@@ -41,10 +41,10 @@ jobs:
 
 
       - name: Ping Application server
-        uses: jtalk/url-health-check-action@v2
+        uses: jtalk/url-health-check-action@v3
         with:
           url: 'http://localhost:4321/ping'
           follow-redirect: true
           max-attempts: 3
           retry-delay: 5s
-          retry-all: fals
+          retry-all: false
