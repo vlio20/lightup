@@ -35,6 +35,5 @@ jobs:
 
       - name: Ping Application server
         uses: wei/curl@master
-        working-directory: ./applications/server/src
         with:
           args: http://localhost:4321/ping
