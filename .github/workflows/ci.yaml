@@ -20,6 +20,9 @@ jobs:
 
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
+        mongodb-username: root
+        mongodb-password: root
+        mongodb-db: lightup
 
       - name: Build Application server
         working-directory: ./applications/server/src
