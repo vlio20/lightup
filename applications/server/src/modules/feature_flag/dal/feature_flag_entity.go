@@ -9,6 +9,7 @@ import (
 
 type FeatureFlagEntity struct {
 	db.BaseEntity `bson:",inline"`
+	AccountID     primitive.ObjectID      `bson:"accountId"`
 	ServiceID     primitive.ObjectID      `bson:"serviceId"`
 	Name          string                  `bson:"name"`
 	Description   string                  `bson:"description"`

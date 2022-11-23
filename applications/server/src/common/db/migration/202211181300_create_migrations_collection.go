@@ -12,9 +12,7 @@ var CreateMigrationsCollection = &Migration{
 	Name:      "CreateMigrationsCollection",
 	CreatedAt: 20221118,
 	Up: func(DB *mongo.Database) {
-		if err := DB.CreateCollection(context.Background(), "migration"); err != nil {
-			panic(err)
-		}
+		CreateCollection("featureFlags", DB)
 
 		indexModel := mongo.IndexModel{
 			Keys:    bson.D{{Key: "name", Value: 1}},

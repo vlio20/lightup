@@ -5,4 +5,4 @@
 use('lightup');
 
 // Create a new index in the collection.
-db.getCollection('featureFlag').deleteMany({});
+db.getCollection('migration').deleteMany({});

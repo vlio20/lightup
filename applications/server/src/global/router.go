@@ -2,7 +2,7 @@ package global
 
 import (
 	"lightup/src/common/config"
-	ff_ctrl "lightup/src/modules/feature_flag/controller"
+	ff_ctrl "lightup/src/modules/feature_flag/ctrl"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

@@ -12,9 +12,18 @@ var CreateFeatureFlagMigration = &Migration{
 	Name:      "CreateFeatureFlag",
 	CreatedAt: 20221118,
 	Up: func(DB *mongo.Database) {
+		CreateCollection("featureFlag", DB)
+
 		indexModel := []mongo.IndexModel{
 			{
-				Keys:    bson.D{{Key: "name", Value: -1}},
+				Keys: bson.D{{Key: "accountId", Value: 1}},
+			},
+			{
+				Keys: bson.D{
+					{Key: "accountId", Value: 1},
+					{Key: "serviceId", Value: 1},
+					{Key: "name", Value: -1},
+				},
 				Options: options.Index().SetUnique(true),
 			},
 			{
