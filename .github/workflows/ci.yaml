@@ -18,6 +18,9 @@ jobs:
         with:
           go-version: 1.19
 
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.8.0
+
       - name: Build Application server
         working-directory: ./applications/server/src
         run: go build .
@@ -29,7 +32,7 @@ jobs:
       - name: Start Application server
         working-directory: ./applications/server/src
         run: |
-          go run . 
+          go run . &
           sleep 5
 
 
