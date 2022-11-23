@@ -1,5 +1,6 @@
-gin:
+router:
   mode: debug
+  port: 4321
 db:
   host: localhost
   port: 27017
