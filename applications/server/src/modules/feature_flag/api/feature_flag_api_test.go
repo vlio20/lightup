@@ -1,8 +1,8 @@
 package api
 
 import (
-	"errors"
 	"lightup/src/common/db"
+	"lightup/src/common/http"
 	"lightup/src/modules/feature_flag/dal"
 	ff_dto "lightup/src/modules/feature_flag/dto"
 	"lightup/src/modules/feature_flag/model"
@@ -13,7 +13,6 @@ import (
 )
 
 var ffMock = genFeatureFlagEntity()
-var errMock = errors.New("not found")
 
 type FeatureFlagBlMock struct {
 }
@@ -23,7 +22,7 @@ func (bl *FeatureFlagBlMock) GetFeatureFlagById(id string) (*dal.FeatureFlagEnti
 		return ffMock, nil
 	}
 
-	return nil, errMock
+	return nil, nil
 }
 
 func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
@@ -68,7 +67,7 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 
 	res, err := ffApi.GetFeatureFlagById("123")
 
-	assert.Equal(t, err, errMock)
+	assert.Equal(t, err.(*http.HttpError).StatusCode, 404)
 	assert.Nil(t, res)
 }
 
