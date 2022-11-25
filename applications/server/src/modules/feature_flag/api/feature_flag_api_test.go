@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -28,6 +27,10 @@ func (bl *FeatureFlagBlMock) GetFeatureFlagById(id string) (*dal.FeatureFlagEnti
 }
 
 func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
+	return ffMock, nil
+}
+
+func (bl *FeatureFlagBlMock) GetFeatureFlag(accountId string, serviceId string, name string) (*dal.FeatureFlagEntity, error) {
 	return ffMock, nil
 }
 

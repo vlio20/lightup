@@ -33,12 +33,23 @@ func (api *FeatureFlagApi) GetFeatureFlagById(id string) (*dto.FeatureFlagDto, e
 }
 
 func (api *FeatureFlagApi) CreateFeatureFlag(createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
+	exisistingFeatureFlag, err := api.featureFlagBl.GetFeatureFlag("accountId", createDto.ServiceID, createDto.Name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if exisistingFeatureFlag != nil {
+		return nil, &http.HttpError{StatusCode: 409, Message: "Feature flag already exists"}
+	}
+
 	input := model.CreateFeatureFlagDto{
 		Name:        createDto.Name,
 		Description: createDto.Description,
 		Archived:    false,
 		Config:      createDto.Config,
 	}
+
 	entity, err := api.featureFlagBl.CreateFeatureFlag(&input)
 
 	if err != nil {

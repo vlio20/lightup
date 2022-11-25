@@ -2,12 +2,13 @@ package router
 
 import (
 	"lightup/src/common/http"
+	"lightup/src/common/log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func handleReturn[T interface{}](c *gin.Context, dto *T, err error) {
+func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err error) {
 	var httpError *http.HttpError
 
 	if err != nil {
@@ -18,6 +19,8 @@ func handleReturn[T interface{}](c *gin.Context, dto *T, err error) {
 		}
 
 		c.JSON(httpError.StatusCode, httpError)
+		logger.Error(httpError.Message, "error", err)
+
 		return
 	}
 
@@ -25,18 +28,21 @@ func handleReturn[T interface{}](c *gin.Context, dto *T, err error) {
 }
 
 func HandleRequest[T interface{}](inv func(*gin.Context) (T, error)) func(*gin.Context) {
+	logger := log.GetLogger("router")
+
 	return func(c *gin.Context) {
 		dto, err := inv(c)
-		handleReturn(c, &dto, err)
+		handleReturn(logger, c, &dto, err)
 	}
 }
 
 func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R, error)) func(*gin.Context) {
+	logger := log.GetLogger("router")
 	return func(c *gin.Context) {
 		var dto T
 
 		if err := c.ShouldBind(&dto); err != nil {
-			handleReturn[R](c, nil, &http.HttpError{
+			handleReturn[R](logger, c, nil, &http.HttpError{
 				StatusCode:    400,
 				Message:       extractValidationError(err.Error()),
 				OriginalError: err,
@@ -46,7 +52,7 @@ func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R
 		}
 
 		resultDto, err := inv(c, &dto)
-		handleReturn(c, &resultDto, err)
+		handleReturn(logger, c, &resultDto, err)
 	}
 }
 

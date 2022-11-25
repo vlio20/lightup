@@ -15,6 +15,7 @@ type FeatureFlagImpl struct {
 type FeatureFlagBl interface {
 	GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error)
 	CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error)
+	GetFeatureFlag(accountId string, serviceId string, name string) (*dal.FeatureFlagEntity, error)
 }
 
 func New() FeatureFlagBl {
@@ -38,4 +39,14 @@ func (impl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto
 	}
 
 	return impl.FeatureFlagRepo.Add(entity)
+}
+
+func (impl *FeatureFlagImpl) GetFeatureFlag(accountId string, serviceId string, name string) (*dal.FeatureFlagEntity, error) {
+	entity, err := impl.FeatureFlagRepo.GetFeatureFlag(accountId, serviceId, name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }

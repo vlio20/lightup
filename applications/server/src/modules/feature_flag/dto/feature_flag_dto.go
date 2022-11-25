@@ -9,6 +9,7 @@ import (
 type CreateFeatureFlagDto struct {
 	Name        string                  `json:"name" binding:"required"`
 	Description string                  `json:"description" binding:"required"`
+	ServiceID   string                  `json:"serviceId"`
 	Config      model.FeatureFlagConfig `json:"config" binding:"required"`
 }
 

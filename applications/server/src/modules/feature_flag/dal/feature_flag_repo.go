@@ -18,3 +18,14 @@ func NewFeatureFlagRepository() *FeatureFlagRepo {
 		},
 	}
 }
+
+func (repo *FeatureFlagRepo) GetFeatureFlag(accountId string, serviceId string, name string) (*FeatureFlagEntity, error) {
+
+	var entity = &FeatureFlagEntity{
+		AccountID: repo.StrIdToObjectID(accountId),
+		ServiceID: repo.StrIdToObjectID(serviceId),
+		Name:      name,
+	}
+
+	return repo.FindOne(entity)
+}

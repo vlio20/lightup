@@ -9,10 +9,10 @@ import (
 
 type FeatureFlagEntity struct {
 	db.BaseEntity `bson:",inline"`
-	AccountID     primitive.ObjectID      `bson:"accountId"`
-	ServiceID     primitive.ObjectID      `bson:"serviceId"`
-	Name          string                  `bson:"name"`
-	Description   string                  `bson:"description"`
-	Archived      bool                    `bson:"archived"`
-	Config        model.FeatureFlagConfig `bson:"config"`
+	AccountID     primitive.ObjectID      `bson:"accountId, omitempty" `
+	ServiceID     primitive.ObjectID      `bson:"serviceId, omitempty"`
+	Name          string                  `bson:"name, omitempty"`
+	Description   string                  `bson:"description, omitempty"`
+	Archived      bool                    `bson:"archived, omitempty"`
+	Config        model.FeatureFlagConfig `bson:"config, omitempty"`
 }

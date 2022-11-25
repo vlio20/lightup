@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"lightup/src/common/http"
+	logging "lightup/src/common/log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,13 +26,26 @@ func GetBaseEntity() *BaseEntity {
 type Repository[T any] struct {
 	DB         *mongo.Database
 	Collection *mongo.Collection
+	logger     logging.Logger
 }
 
 func NewRepository[T any](db *mongo.Database, collection string) *Repository[T] {
 	return &Repository[T]{
 		DB:         db,
 		Collection: db.Collection(collection),
+		logger:     logging.GetLogger("Repository_" + collection),
 	}
+}
+
+func (repo *Repository[T]) StrIdToObjectID(id string) primitive.ObjectID {
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		repo.logger.Error("StrIdToObjectID is not valid, provided, id: "+id, err)
+		return primitive.NilObjectID
+	}
+
+	return objectId
 }
 
 func (r *Repository[T]) Add(entity *T) (*T, error) {
@@ -53,11 +66,13 @@ func (r *Repository[T]) Add(entity *T) (*T, error) {
 
 func (r *Repository[T]) GetByObjectId(objectId *primitive.ObjectID) (*T, error) {
 	var entity T
-	result := r.Collection.FindOne(context.Background(), bson.M{"_id": objectId})
-
-	err := result.Decode(&entity)
+	err := r.Collection.FindOne(context.Background(), bson.M{"_id": objectId}).Decode(&entity)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 
@@ -65,20 +80,26 @@ func (r *Repository[T]) GetByObjectId(objectId *primitive.ObjectID) (*T, error) 
 }
 
 func (r *Repository[T]) GetById(id string) (*T, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-
-	if err != nil {
-		return nil, &http.HttpError{StatusCode: 409, Message: "Invalid id", OriginalError: err}
-	}
+	objectId := r.StrIdToObjectID(id)
 
 	return r.GetByObjectId(&objectId)
 }
 
-// func (r *repository[T]) Get(params *T, ctx context.Context) *T {
-// 	var entity T
-// 	r.db.WithContext(ctx).Where(&params).FirstOrInit(&entity)
-// 	return &entity
-// }
+func (r *Repository[T]) FindOne(filter interface{}) (*T, error) {
+	var entity T
+
+	err := r.Collection.FindOne(context.Background(), filter).Decode(&entity)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &entity, nil
+}
 
 // func (r *repository[T]) GetAll(ctx context.Context) (*[]T, error) {
 // 	var entities []T
