@@ -9,6 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ReqContext struct {
+	*gin.Context
+	AccountID primitive.ObjectID
+}
+
 func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err error) {
 	var httpError *http.HttpError
 
@@ -28,19 +33,21 @@ func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err 
 	c.JSON(200, dto)
 }
 
-func HandleRequest[T interface{}](inv func(*gin.Context) (T, error)) func(*gin.Context) {
+func HandleRequest[T interface{}](inv func(*ReqContext) (T, error)) func(*gin.Context) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {
-		dto, err := inv(c)
+		appContext := getRequestContext(c)
+		dto, err := inv(appContext)
 		handleReturn(logger, c, &dto, err)
 	}
 }
 
-func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R, error)) func(*gin.Context) {
+func HandleBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
 	logger := log.GetLogger("router")
 	return func(c *gin.Context) {
 		var dto T
+		appContext := getRequestContext(c)
 
 		if err := c.ShouldBind(&dto); err != nil {
 			handleReturn[R](logger, c, nil, &http.HttpError{
@@ -52,12 +59,12 @@ func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R
 			return
 		}
 
-		resultDto, err := inv(c, &dto)
+		resultDto, err := inv(appContext, &dto)
 		handleReturn(logger, c, &resultDto, err)
 	}
 }
 
-func GetParamAsObjectID(c *gin.Context, key string) (*primitive.ObjectID, *http.HttpError) {
+func GetParamAsObjectID(c *ReqContext, key string) (*primitive.ObjectID, *http.HttpError) {
 	id := c.Param(key)
 
 	objId, err := primitive.ObjectIDFromHex(id)
@@ -77,4 +84,11 @@ func extractValidationError(msg string) string {
 	parts := strings.Split(msg, "Error:")
 
 	return parts[len(parts)-1]
+}
+
+func getRequestContext(c *gin.Context) *ReqContext {
+	return &ReqContext{
+		Context:   c,
+		AccountID: primitive.NewObjectID(),
+	}
 }

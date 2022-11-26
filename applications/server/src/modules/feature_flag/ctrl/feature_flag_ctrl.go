@@ -28,11 +28,11 @@ func (ctrl *FeatureFlagController) Init(r *gin.RouterGroup) {
 	r.POST("/featureFlags", router.HandleBounding(ctrl.createFeatureFlag))
 }
 
-func (ctrl *FeatureFlagController) createFeatureFlag(c *gin.Context, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
+func (ctrl *FeatureFlagController) createFeatureFlag(c *router.ReqContext, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
 	return ctrl.api.CreateFeatureFlag(primitive.NewObjectID(), createDto)
 }
 
-func (ctrl *FeatureFlagController) getFeatureFlagById(c *gin.Context) (*dto.FeatureFlagDto, error) {
+func (ctrl *FeatureFlagController) getFeatureFlagById(c *router.ReqContext) (*dto.FeatureFlagDto, error) {
 	id, err := router.GetParamAsObjectID(c, "id")
 	if err != nil {
 		return nil, err

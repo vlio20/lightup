@@ -28,13 +28,13 @@ func (ctrl *AccountController) Init(r *gin.RouterGroup) {
 	r.POST("/accounts", router.HandleBounding(ctrl.create))
 }
 
-func (ctrl *AccountController) create(c *gin.Context, createDto *dto.CreateAccountDto) (*app_dto.CreatedEntityDto, error) {
+func (ctrl *AccountController) create(c *router.ReqContext, createDto *dto.CreateAccountDto) (*app_dto.CreatedEntityDto, error) {
 	accountID := primitive.NewObjectID()
 
 	return ctrl.api.CreateAccount(accountID, createDto)
 }
 
-func (ctrl *AccountController) getById(c *gin.Context) (*dto.AccountDto, error) {
+func (ctrl *AccountController) getById(c *router.ReqContext) (*dto.AccountDto, error) {
 	id, err := router.GetParamAsObjectID(c, "id")
 	if err != nil {
 		return nil, err
