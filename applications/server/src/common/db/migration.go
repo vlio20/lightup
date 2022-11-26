@@ -17,6 +17,7 @@ var migrationsList = []migration.Migration{
 	*migration.CreateMigrationsCollection,
 	*migration.CreateFeatureFlagMigration,
 	*migration.CreateServiceMigration,
+	*migration.CreateAccountMigration,
 }
 
 func RunMigrations() {

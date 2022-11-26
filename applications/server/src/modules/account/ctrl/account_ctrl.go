@@ -4,41 +4,41 @@ import (
 	app_dto "lightup/src/common/dto"
 	"lightup/src/common/log"
 	"lightup/src/common/router"
-	"lightup/src/modules/service/api"
-	"lightup/src/modules/service/dto"
+	"lightup/src/modules/account/api"
+	"lightup/src/modules/account/dto"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ServiceController struct {
-	api    *api.ServiceApi
+type AccountController struct {
+	api    *api.AccountApi
 	logger log.Logger
 }
 
-func New() *ServiceController {
-	return &ServiceController{
+func New() *AccountController {
+	return &AccountController{
 		api:    api.New(),
-		logger: log.GetLogger("service_ctrl"),
+		logger: log.GetLogger("account_ctrl"),
 	}
 }
 
-func (ctrl *ServiceController) Init(r *gin.RouterGroup) {
-	r.GET("/services/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/services", router.HandleBounding(ctrl.create))
+func (ctrl *AccountController) Init(r *gin.RouterGroup) {
+	r.GET("/accounts/:id", router.HandleRequest(ctrl.getById))
+	r.POST("/accounts", router.HandleBounding(ctrl.create))
 }
 
-func (ctrl *ServiceController) create(c *gin.Context, createDto *dto.CreateServiceDto) (*app_dto.CreatedEntityDto, error) {
+func (ctrl *AccountController) create(c *gin.Context, createDto *dto.CreateAccountDto) (*app_dto.CreatedEntityDto, error) {
 	accountID := primitive.NewObjectID()
 
-	return ctrl.api.CreateService(accountID, createDto)
+	return ctrl.api.CreateAccount(accountID, createDto)
 }
 
-func (ctrl *ServiceController) getById(c *gin.Context) (*dto.ServiceDto, error) {
+func (ctrl *AccountController) getById(c *gin.Context) (*dto.AccountDto, error) {
 	id, err := router.GetParamAsObjectID(c, "id")
 	if err != nil {
 		return nil, err
 	}
 
-	return ctrl.api.GetServiceById(*id)
+	return ctrl.api.GetAccountById(*id)
 }

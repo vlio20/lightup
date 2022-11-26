@@ -2,17 +2,17 @@ package dto
 
 import (
 	"lightup/src/common/dto"
-	"lightup/src/modules/service/dal"
+	"lightup/src/modules/account/dal"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type CreateServiceDto struct {
+type CreateAccountDto struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description" binding:"required"`
 }
 
-type ServiceDto struct {
+type AccountDto struct {
 	dto.BaseEntityDto
 	AccountID   primitive.ObjectID `json:"accountId"`
 	Name        string             `json:"name"`
@@ -20,10 +20,9 @@ type ServiceDto struct {
 	Archived    bool               `json:"archived"`
 }
 
-func CreateFromEntity(entity *dal.ServiceEntity) *ServiceDto {
-	return &ServiceDto{
+func CreateFromEntity(entity *dal.AccountEntity) *AccountDto {
+	return &AccountDto{
 		BaseEntityDto: *dto.GetResourceFromEntity(&entity.BaseEntity),
-		AccountID:     entity.AccountID,
 		Name:          entity.Name,
 		Description:   entity.Description,
 		Archived:      entity.Archived,

@@ -3,52 +3,40 @@ package bl
 import (
 	"lightup/src/common/db"
 	"lightup/src/common/log"
-	"lightup/src/modules/service/dal"
-	"lightup/src/modules/service/model"
+	"lightup/src/modules/account/dal"
+	"lightup/src/modules/account/model"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ServiceImpl struct {
+type AccountImpl struct {
 	log         log.Logger
-	ServiceRepo *dal.ServiceRepo
+	AccountRepo *dal.AccountRepo
 }
 
-type ServiceBl interface {
-	GetServiceById(id primitive.ObjectID) (*dal.ServiceEntity, error)
-	CreateService(input *model.CreateServiceModel) (*dal.ServiceEntity, error)
-	GetService(accountId primitive.ObjectID, name string) (*dal.ServiceEntity, error)
+type AccountBl interface {
+	GetAccountById(id primitive.ObjectID) (*dal.AccountEntity, error)
+	CreateAccount(input *model.CreateAccountModel) (*dal.AccountEntity, error)
 }
 
-func New() ServiceBl {
-	return &ServiceImpl{
-		log:         log.GetLogger("ServiceBl"),
-		ServiceRepo: dal.NewServiceRepository(),
+func New() AccountBl {
+	return &AccountImpl{
+		log:         log.GetLogger("AccountBl"),
+		AccountRepo: dal.NewAccountRepository(),
 	}
 }
 
-func (impl *ServiceImpl) GetServiceById(id primitive.ObjectID) (*dal.ServiceEntity, error) {
-	return impl.ServiceRepo.GetByObjectId(&id)
+func (impl *AccountImpl) GetAccountById(id primitive.ObjectID) (*dal.AccountEntity, error) {
+	return impl.AccountRepo.GetByObjectId(&id)
 }
 
-func (impl *ServiceImpl) CreateService(input *model.CreateServiceModel) (*dal.ServiceEntity, error) {
-	entity := &dal.ServiceEntity{
+func (impl *AccountImpl) CreateAccount(input *model.CreateAccountModel) (*dal.AccountEntity, error) {
+	entity := &dal.AccountEntity{
 		BaseEntity:  *db.GetBaseEntity(),
-		AccountID:   input.AccountID,
 		Name:        input.Name,
 		Description: input.Description,
 		Archived:    false,
 	}
 
-	return impl.ServiceRepo.Add(entity)
-}
-
-func (impl *ServiceImpl) GetService(accountId primitive.ObjectID, name string) (*dal.ServiceEntity, error) {
-	entity, err := impl.ServiceRepo.GetService(accountId, name)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return entity, nil
+	return impl.AccountRepo.Add(entity)
 }

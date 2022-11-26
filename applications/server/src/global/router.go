@@ -2,6 +2,7 @@ package global
 
 import (
 	"lightup/src/common/config"
+	account_ctrl "lightup/src/modules/account/ctrl"
 	ff_ctrl "lightup/src/modules/feature_flag/ctrl"
 	service_ctrl "lightup/src/modules/service/ctrl"
 	"strconv"
@@ -31,6 +32,7 @@ func InitRouter() {
 	{
 		ff_ctrl.New().Init(v1)
 		service_ctrl.New().Init(v1)
+		account_ctrl.New().Init(v1)
 	}
 
 	route.GET("/ping", func(c *gin.Context) {

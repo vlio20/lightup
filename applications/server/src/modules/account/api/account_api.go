@@ -3,25 +3,25 @@ package api
 import (
 	app_dto "lightup/src/common/dto"
 	"lightup/src/common/http"
-	"lightup/src/modules/service/bl"
-	"lightup/src/modules/service/dto"
-	"lightup/src/modules/service/model"
+	"lightup/src/modules/account/bl"
+	"lightup/src/modules/account/dto"
+	"lightup/src/modules/account/model"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ServiceApi struct {
-	serviceBl bl.ServiceBl
+type AccountApi struct {
+	accountBl bl.AccountBl
 }
 
-func New() *ServiceApi {
-	return &ServiceApi{
-		serviceBl: bl.New(),
+func New() *AccountApi {
+	return &AccountApi{
+		accountBl: bl.New(),
 	}
 }
 
-func (api *ServiceApi) GetServiceById(id primitive.ObjectID) (*dto.ServiceDto, error) {
-	entity, err := api.serviceBl.GetServiceById(id)
+func (api *AccountApi) GetAccountById(id primitive.ObjectID) (*dto.AccountDto, error) {
+	entity, err := api.accountBl.GetAccountById(id)
 
 	if err != nil {
 		return nil, err
@@ -34,24 +34,13 @@ func (api *ServiceApi) GetServiceById(id primitive.ObjectID) (*dto.ServiceDto, e
 	return dto.CreateFromEntity(entity), nil
 }
 
-func (api *ServiceApi) CreateService(accountID primitive.ObjectID, createDto *dto.CreateServiceDto) (*app_dto.CreatedEntityDto, error) {
-	exisistingService, err := api.serviceBl.GetService(accountID, createDto.Name)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if exisistingService != nil {
-		return nil, &http.HttpError{StatusCode: 409, Message: "Feature flag already exists"}
-	}
-
-	input := model.CreateServiceModel{
-		AccountID:   accountID,
+func (api *AccountApi) CreateAccount(accountID primitive.ObjectID, createDto *dto.CreateAccountDto) (*app_dto.CreatedEntityDto, error) {
+	input := model.CreateAccountModel{
 		Name:        createDto.Name,
 		Description: createDto.Description,
 	}
 
-	entity, err := api.serviceBl.CreateService(&input)
+	entity, err := api.accountBl.CreateAccount(&input)
 
 	if err != nil {
 		return nil, err
