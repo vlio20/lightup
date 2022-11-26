@@ -72,8 +72,9 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 }
 
 func comperEntityAndDto(t *testing.T, entity *dal.FeatureFlagEntity, dto *ff_dto.FeatureFlagDto) {
-	assert.Equal(t, entity.ID.Hex(), dto.ID)
-	assert.Equal(t, entity.ServiceID.Hex(), dto.ServiceID)
+	assert.Equal(t, entity.ID, dto.ID)
+	assert.Equal(t, entity.ServiceID, dto.ServiceID)
+	assert.Equal(t, entity.AccountID, dto.AccountID)
 	assert.Equal(t, entity.Name, dto.Name)
 	assert.Equal(t, entity.Description, dto.Description)
 	assert.Equal(t, entity.Archived, dto.Archived)
