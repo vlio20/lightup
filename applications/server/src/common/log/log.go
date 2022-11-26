@@ -34,7 +34,9 @@ func (f *myFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		levelColor = 36 // blue
 	}
 
-	return []byte(fmt.Sprintf("[%s] - [%s] - \x1b[%dm%s\x1b[0m - %s\n", entry.Time.Format(f.formatter.TimestampFormat), f.module, levelColor, strings.ToUpper(entry.Level.String()), entry.Message)), nil
+	msgText := fmt.Sprintf("[%s] - [%s] - %s - %s\n", entry.Time.Format(f.formatter.TimestampFormat), f.module, strings.ToUpper(entry.Level.String()), entry.Message)
+
+	return []byte(fmt.Sprintf("\x1b[%dm%s\x1b[0m", levelColor, msgText)), nil
 }
 
 func GetLogger(module string) Logger {

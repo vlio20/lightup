@@ -17,8 +17,8 @@ var ffMock = genFeatureFlagEntity()
 type FeatureFlagBlMock struct {
 }
 
-func (bl *FeatureFlagBlMock) GetFeatureFlagById(id string) (*dal.FeatureFlagEntity, error) {
-	if id == ffMock.ID.Hex() {
+func (bl *FeatureFlagBlMock) GetFeatureFlagById(id primitive.ObjectID) (*dal.FeatureFlagEntity, error) {
+	if id == ffMock.ID {
 		return ffMock, nil
 	}
 
@@ -29,7 +29,7 @@ func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto
 	return ffMock, nil
 }
 
-func (bl *FeatureFlagBlMock) GetFeatureFlag(accountId string, serviceId string, name string) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagBlMock) GetFeatureFlag(accountId primitive.ObjectID, serviceId primitive.ObjectID, name string) (*dal.FeatureFlagEntity, error) {
 	return ffMock, nil
 }
 
@@ -54,7 +54,7 @@ func TestGetFeatureFlag_whenFound_returnDto(t *testing.T) {
 		featureFlagBl: &FeatureFlagBlMock{},
 	}
 
-	res, err := ffApi.GetFeatureFlagById(ffMock.ID.Hex())
+	res, err := ffApi.GetFeatureFlagById(ffMock.ID)
 
 	assert.Nil(t, err)
 	comperEntityAndDto(t, ffMock, res)
@@ -65,7 +65,7 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 		featureFlagBl: &FeatureFlagBlMock{},
 	}
 
-	res, err := ffApi.GetFeatureFlagById("123")
+	res, err := ffApi.GetFeatureFlagById(primitive.NewObjectID())
 
 	assert.Equal(t, err.(*http.HttpError).StatusCode, 404)
 	assert.Nil(t, res)

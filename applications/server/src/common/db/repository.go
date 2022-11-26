@@ -79,12 +79,6 @@ func (r *Repository[T]) GetByObjectId(objectId *primitive.ObjectID) (*T, error) 
 	return &entity, nil
 }
 
-func (r *Repository[T]) GetById(id string) (*T, error) {
-	objectId := r.StrIdToObjectID(id)
-
-	return r.GetByObjectId(&objectId)
-}
-
 func (r *Repository[T]) FindOne(filter interface{}) (*T, error) {
 	var entity T
 

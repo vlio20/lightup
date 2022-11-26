@@ -2,6 +2,8 @@ package dal
 
 import (
 	"lightup/src/common/db"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var getDb = db.GetDB
@@ -19,11 +21,11 @@ func NewFeatureFlagRepository() *FeatureFlagRepo {
 	}
 }
 
-func (repo *FeatureFlagRepo) GetFeatureFlag(accountId string, serviceId string, name string) (*FeatureFlagEntity, error) {
+func (repo *FeatureFlagRepo) GetFeatureFlag(accountId primitive.ObjectID, serviceId primitive.ObjectID, name string) (*FeatureFlagEntity, error) {
 
 	var entity = &FeatureFlagEntity{
-		AccountID: repo.StrIdToObjectID(accountId),
-		ServiceID: repo.StrIdToObjectID(serviceId),
+		AccountID: accountId,
+		ServiceID: serviceId,
 		Name:      name,
 	}
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err error) {
@@ -54,6 +55,22 @@ func HandleBounding[T interface{}, R interface{}](inv func(*gin.Context, *T) (*R
 		resultDto, err := inv(c, &dto)
 		handleReturn(logger, c, &resultDto, err)
 	}
+}
+
+func GetParamAsObjectID(c *gin.Context, key string) (*primitive.ObjectID, *http.HttpError) {
+	id := c.Param(key)
+
+	objId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, &http.HttpError{
+			StatusCode:    400,
+			Message:       "Invalid ID: " + id,
+			OriginalError: nil,
+		}
+	}
+
+	return &objId, nil
 }
 
 func extractValidationError(msg string) string {
