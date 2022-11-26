@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"lightup/src/common/config"
-	logging "lightup/src/common/log"
+	"lightup/src/common/log"
 	"strconv"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,15 +21,13 @@ type dbConfig struct {
 	DBName      string `mapstructure:"dbName"`
 }
 
-var log logging.Logger
-var getLogger = logging.GetLogger
 var client *mongo.Client
 var getConfig = config.UnmarshalKey
 var dbConf = &dbConfig{}
 
 func Init() {
 	getConfig("db", dbConf)
-	log = getLogger("db")
+	logger := log.GetLogger("db")
 
 	clientOptions := options.ClientOptions{
 		Hosts:        []string{dbConf.Host + ":" + strconv.Itoa(dbConf.Port)},
@@ -51,7 +49,7 @@ func Init() {
 		panic(err)
 	}
 
-	log.Info("Successfully connected and pinged.")
+	logger.Info("Successfully connected and pinged.")
 	RunMigrations()
 }
 

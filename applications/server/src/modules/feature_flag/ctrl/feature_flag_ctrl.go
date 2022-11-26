@@ -29,9 +29,7 @@ func (ctrl *FeatureFlagController) Init(r *gin.RouterGroup) {
 }
 
 func (ctrl *FeatureFlagController) createFeatureFlag(c *gin.Context, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
-	accountID := primitive.NewObjectID()
-	ctrl.logger.Info(accountID.Hex())
-	return ctrl.api.CreateFeatureFlag(accountID, createDto)
+	return ctrl.api.CreateFeatureFlag(primitive.NewObjectID(), createDto)
 }
 
 func (ctrl *FeatureFlagController) getFeatureFlagById(c *gin.Context) (*dto.FeatureFlagDto, error) {

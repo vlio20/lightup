@@ -10,7 +10,7 @@ import (
 
 var CreateMigrationsCollection = &Migration{
 	Name:      "CreateMigrationsCollection",
-	CreatedAt: 20221118,
+	CreatedAt: 202211181300,
 	Up: func(DB *mongo.Database) {
 		CreateCollection("featureFlags", DB)
 

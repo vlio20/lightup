@@ -7,7 +7,7 @@ import (
 )
 
 type CreatedEntityDto struct {
-	ID string `json:"id"`
+	ID primitive.ObjectID `json:"id"`
 }
 
 type BaseEntityDto struct {

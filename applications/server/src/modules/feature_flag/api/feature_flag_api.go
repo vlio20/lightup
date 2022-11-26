@@ -61,6 +61,6 @@ func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, creat
 	}
 
 	return &app_dto.CreatedEntityDto{
-		ID: entity.ID.Hex(),
+		ID: entity.ID,
 	}, nil
 }

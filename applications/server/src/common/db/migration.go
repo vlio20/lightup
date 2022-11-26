@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"lightup/src/common/db/migration"
+	"lightup/src/common/log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,21 +12,24 @@ import (
 var getDb = func() *mongo.Database {
 	return client.Database("lightup")
 }
+
 var migrationsList = []migration.Migration{
 	*migration.CreateMigrationsCollection,
 	*migration.CreateFeatureFlagMigration,
+	*migration.CreateServiceMigration,
 }
 
 func RunMigrations() {
+	logger := log.GetLogger("migration")
 	col := getDb().Collection("migration")
 
 	for _, migration := range migrationsList {
 		if !checkIfMigrationExist(col, migration.Name) {
-			fmt.Println("Creating migration: ", migration.Name)
+			logger.Info("Creating migration: " + migration.Name)
 			migration.Up(getDb())
 			col.InsertOne(context.Background(), bson.M{"name": migration.Name, "createdAt": migration.CreatedAt})
 		} else {
-			fmt.Println("Migration already exists: ", migration.Name)
+			logger.Info("Migration already exists: ", migration.Name)
 		}
 	}
 }

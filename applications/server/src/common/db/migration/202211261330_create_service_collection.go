@@ -8,11 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var CreateFeatureFlagMigration = &Migration{
-	Name:      "CreateFeatureFlag",
-	CreatedAt: 202211181500,
+var CreateServiceMigration = &Migration{
+	Name:      "CreateService",
+	CreatedAt: 202211261330,
 	Up: func(DB *mongo.Database) {
-		CreateCollection("featureFlag", DB)
+		CreateCollection("service", DB)
 
 		indexModel := []mongo.IndexModel{
 			{
@@ -21,7 +21,6 @@ var CreateFeatureFlagMigration = &Migration{
 			{
 				Keys: bson.D{
 					{Key: "accountId", Value: 1},
-					{Key: "serviceId", Value: 1},
 					{Key: "name", Value: -1},
 				},
 				Options: options.Index().SetUnique(true),
@@ -34,6 +33,6 @@ var CreateFeatureFlagMigration = &Migration{
 			},
 		}
 
-		DB.Collection("featureFlag").Indexes().CreateMany(context.Background(), indexModel)
+		DB.Collection("service").Indexes().CreateMany(context.Background(), indexModel)
 	},
 }
