@@ -9,7 +9,7 @@ import (
 )
 
 var CreateUserMigration = &Migration{
-	Name:      "userAccount",
+	Name:      "create_user_collection",
 	CreatedAt: 202211262016,
 	Up: func(DB *mongo.Database) {
 		CreateCollection("user", DB)

@@ -9,7 +9,7 @@ import (
 )
 
 var CreateFeatureFlagMigration = &Migration{
-	Name:      "CreateFeatureFlag",
+	Name:      "create_feature_flag_collection",
 	CreatedAt: 202211181500,
 	Up: func(DB *mongo.Database) {
 		CreateCollection("featureFlag", DB)
