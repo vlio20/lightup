@@ -25,7 +25,7 @@ func New() *ServiceController {
 
 func (ctrl *ServiceController) Init(r *gin.RouterGroup) {
 	r.GET("/services/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/services", router.HandleBounding(ctrl.create))
+	r.POST("/services", router.HandleBodyBounding(ctrl.create))
 }
 
 func (ctrl *ServiceController) create(c *router.ReqContext, createDto *dto.CreateServiceDto) (*app_dto.CreatedEntityDto, error) {

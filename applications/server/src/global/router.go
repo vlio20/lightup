@@ -5,6 +5,7 @@ import (
 	account_ctrl "lightup/src/modules/account/ctrl"
 	ff_ctrl "lightup/src/modules/feature_flag/ctrl"
 	service_ctrl "lightup/src/modules/service/ctrl"
+	serving_ctrl "lightup/src/modules/serving/ctrl"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,7 @@ func InitRouter() {
 		ff_ctrl.New().Init(v1)
 		service_ctrl.New().Init(v1)
 		account_ctrl.New().Init(v1)
+		serving_ctrl.New().Init(v1)
 	}
 
 	route.GET("/ping", func(c *gin.Context) {

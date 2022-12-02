@@ -24,7 +24,7 @@ func New() *UserController {
 
 func (ctrl *UserController) Init(r *gin.RouterGroup) {
 	r.GET("/users/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/users", router.HandleBounding(ctrl.create))
+	r.POST("/users", router.HandleBodyBounding(ctrl.create))
 }
 
 func (ctrl *UserController) create(c *router.ReqContext, createDto *dto.CreateUserDto) (*app_dto.CreatedEntityDto, error) {

@@ -25,7 +25,7 @@ func New() *FeatureFlagController {
 
 func (ctrl *FeatureFlagController) Init(r *gin.RouterGroup) {
 	r.GET("/featureFlags/:id", router.HandleRequest(ctrl.getFeatureFlagById))
-	r.POST("/featureFlags", router.HandleBounding(ctrl.createFeatureFlag))
+	r.POST("/featureFlags", router.HandleBodyBounding(ctrl.createFeatureFlag))
 }
 
 func (ctrl *FeatureFlagController) createFeatureFlag(c *router.ReqContext, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {

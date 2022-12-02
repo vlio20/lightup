@@ -43,8 +43,9 @@ func HandleRequest[T interface{}](inv func(*ReqContext) (T, error)) func(*gin.Co
 	}
 }
 
-func HandleBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
+func HandleBodyBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
 	logger := log.GetLogger("router")
+
 	return func(c *gin.Context) {
 		var dto T
 		appContext := getRequestContext(c)
@@ -60,6 +61,28 @@ func HandleBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R,
 		}
 
 		resultDto, err := inv(appContext, &dto)
+		handleReturn(logger, c, &resultDto, err)
+	}
+}
+
+func HandleQueryBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
+	logger := log.GetLogger("router")
+
+	return func(c *gin.Context) {
+		var queryDto T
+		appContext := getRequestContext(c)
+
+		if err := c.BindQuery(&queryDto); err != nil {
+			handleReturn[R](logger, c, nil, &http.HttpError{
+				StatusCode:    400,
+				Message:       extractValidationError(err.Error()),
+				OriginalError: err,
+			})
+
+			return
+		}
+
+		resultDto, err := inv(appContext, &queryDto)
 		handleReturn(logger, c, &resultDto, err)
 	}
 }
