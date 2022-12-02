@@ -1,0 +1,3 @@
+use('lightup');
+
+db.getCollectionNames().forEach(c=>db[c].drop())
