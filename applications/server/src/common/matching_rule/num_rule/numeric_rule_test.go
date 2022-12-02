@@ -6,13 +6,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var rule = &NumericFilteringRule{
+var baseRule = &NumericMatchingRule{
 	Key:      "key",
 	Operator: LessThan,
 	Value:    1.0,
 }
 
 func Test_lessThen(t *testing.T) {
+	rule := get_new_rule(LessThan)
+
 	res, err := rule.IsMatch("0.5")
 	assert.True(t, res)
 	assert.Nil(t, err)
@@ -27,6 +29,8 @@ func Test_lessThen(t *testing.T) {
 }
 
 func Test_lessEqualThen(t *testing.T) {
+	rule := get_new_rule(LessOrEqual)
+
 	res, err := rule.IsMatch("0.5")
 	assert.True(t, res)
 	assert.Nil(t, err)
@@ -41,8 +45,7 @@ func Test_lessEqualThen(t *testing.T) {
 }
 
 func Test_greaterThen(t *testing.T) {
-	gtRule := rule
-	gtRule.Operator = GreaterThan
+	rule := get_new_rule(GreaterThan)
 
 	res, err := rule.IsMatch("2")
 	assert.True(t, res)
@@ -58,15 +61,14 @@ func Test_greaterThen(t *testing.T) {
 }
 
 func Test_greaterEqualThen(t *testing.T) {
-	gtRule := rule
-	gtRule.Operator = GreaterThan
+	rule := get_new_rule(GreaterOrEqual)
 
 	matchingRes, err := rule.IsMatch("2")
 	assert.True(t, matchingRes)
 	assert.Nil(t, err)
 
-	notMatchingResEqual, err := rule.IsMatch("1")
-	assert.True(t, notMatchingResEqual)
+	matchingResEqual, err := rule.IsMatch("1")
+	assert.True(t, matchingResEqual)
 	assert.Nil(t, err)
 
 	notMatchingResSamller, err := rule.IsMatch("0")
@@ -75,8 +77,7 @@ func Test_greaterEqualThen(t *testing.T) {
 }
 
 func Test_equal(t *testing.T) {
-	gtRule := rule
-	gtRule.Operator = Equal
+	rule := get_new_rule(Equal)
 
 	res1, err := rule.IsMatch("1")
 	assert.True(t, res1)
@@ -97,9 +98,16 @@ func Test_equal(t *testing.T) {
 
 func Test_match_fail(t *testing.T) {
 	invalideValue := "asd"
-	res, err := rule.IsMatch(invalideValue)
+	res, err := baseRule.IsMatch(invalideValue)
 
 	assert.False(t, res)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), invalideValue)
+}
+
+func get_new_rule(operation NumericOperator) *NumericMatchingRule {
+	gtRule := baseRule
+	gtRule.Operator = operation
+
+	return gtRule
 }

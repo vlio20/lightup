@@ -15,13 +15,13 @@ const (
 	GreaterThan    NumericOperator = "gt"
 )
 
-type NumericFilteringRule struct {
+type NumericMatchingRule struct {
 	Key      string          `json:"key" bson:"key" binding:"required"`
 	Operator NumericOperator `json:"operator" bson:"operator" binding:"required"`
 	Value    float64         `json:"value" bson:"value" binding:"required"`
 }
 
-func (r *NumericFilteringRule) IsMatch(strVal string) (bool, error) {
+func (r *NumericMatchingRule) IsMatch(strVal string) (bool, error) {
 	val, err := strconv.ParseFloat(strVal, 64)
 
 	if err != nil {
