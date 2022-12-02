@@ -3,6 +3,7 @@ package api
 import (
 	"lightup/src/common/db"
 	"lightup/src/common/http"
+	"lightup/src/common/matching_rule"
 	"lightup/src/modules/feature_flag/dal"
 	ff_dto "lightup/src/modules/feature_flag/dto"
 	"lightup/src/modules/feature_flag/model"
@@ -25,7 +26,7 @@ func (bl *FeatureFlagBlMock) GetFeatureFlagById(id primitive.ObjectID) (*dal.Fea
 	return nil, nil
 }
 
-func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagInput) (*dal.FeatureFlagEntity, error) {
 	return ffMock, nil
 }
 
@@ -43,8 +44,7 @@ func genFeatureFlagEntity() *dal.FeatureFlagEntity {
 		Description: "description",
 		Archived:    false,
 		Config: model.FeatureFlagConfig{
-			Identifier: "id",
-			Percentage: 0,
+			MatchingRules: []matching_rule.MatchingRule{},
 		},
 	}
 }

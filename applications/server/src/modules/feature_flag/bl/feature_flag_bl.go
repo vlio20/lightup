@@ -16,7 +16,7 @@ type FeatureFlagImpl struct {
 
 type FeatureFlagBl interface {
 	GetFeatureFlagById(id primitive.ObjectID) (*dal.FeatureFlagEntity, error)
-	CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error)
+	CreateFeatureFlag(input *model.CreateFeatureFlagInput) (*dal.FeatureFlagEntity, error)
 	GetFeatureFlag(accountId primitive.ObjectID, serviceId primitive.ObjectID, name string) (*dal.FeatureFlagEntity, error)
 }
 
@@ -31,7 +31,7 @@ func (impl *FeatureFlagImpl) GetFeatureFlagById(id primitive.ObjectID) (*dal.Fea
 	return impl.FeatureFlagRepo.GetByObjectId(&id)
 }
 
-func (impl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagDto) (*dal.FeatureFlagEntity, error) {
+func (impl *FeatureFlagImpl) CreateFeatureFlag(input *model.CreateFeatureFlagInput) (*dal.FeatureFlagEntity, error) {
 	entity := &dal.FeatureFlagEntity{
 		BaseEntity:  *db.GetBaseEntity(),
 		AccountID:   input.AccountID,
