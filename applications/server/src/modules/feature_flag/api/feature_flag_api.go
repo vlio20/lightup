@@ -45,7 +45,7 @@ func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, creat
 		return nil, &http.HttpError{StatusCode: 409, Message: "Feature flag already exists"}
 	}
 
-	input := model.CreateFeatureFlagInput{
+	input := &model.CreateFeatureFlagInput{
 		AccountID:   accountID,
 		Name:        createDto.Name,
 		Description: createDto.Description,
@@ -54,7 +54,7 @@ func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, creat
 		Config:      createDto.Config,
 	}
 
-	entity, err := api.featureFlagBl.CreateFeatureFlag(&input)
+	entity, err := api.featureFlagBl.CreateFeatureFlag(input)
 
 	if err != nil {
 		return nil, err

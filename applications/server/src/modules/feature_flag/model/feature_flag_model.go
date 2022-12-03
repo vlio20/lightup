@@ -1,14 +1,10 @@
 package model
 
 import (
-	"lightup/src/common/matching_rule"
+	ff_model "lightup/src/common/model"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-type FeatureFlagConfig struct {
-	MatchingRules []matching_rule.MatchingRule `bson:"matchingRules" json:"matchingRules" binding:"required"`
-}
 
 type CreateFeatureFlagInput struct {
 	AccountID   primitive.ObjectID
@@ -16,5 +12,5 @@ type CreateFeatureFlagInput struct {
 	Description string
 	ServiceID   primitive.ObjectID
 	Archived    bool
-	Config      FeatureFlagConfig `bson:"config"`
+	Config      ff_model.FeatureFlagConfig `bson:"config"`
 }

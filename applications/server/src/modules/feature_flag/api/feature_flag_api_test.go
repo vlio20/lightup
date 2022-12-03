@@ -3,7 +3,7 @@ package api
 import (
 	"lightup/src/common/db"
 	"lightup/src/common/http"
-	"lightup/src/common/matching_rule"
+	app_model "lightup/src/common/model"
 	"lightup/src/modules/feature_flag/dal"
 	ff_dto "lightup/src/modules/feature_flag/dto"
 	"lightup/src/modules/feature_flag/model"
@@ -43,8 +43,8 @@ func genFeatureFlagEntity() *dal.FeatureFlagEntity {
 		Name:        "name",
 		Description: "description",
 		Archived:    false,
-		Config: model.FeatureFlagConfig{
-			MatchingRules: []matching_rule.MatchingRule{},
+		Config: app_model.FeatureFlagConfig{
+			MatchingSegments: []app_model.MatchingSegment{},
 		},
 	}
 }
