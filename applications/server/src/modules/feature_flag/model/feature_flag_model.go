@@ -10,7 +10,7 @@ type CreateFeatureFlagInput struct {
 	AccountID   primitive.ObjectID
 	Name        string
 	Description string
-	ServiceID   primitive.ObjectID
+	Tags        []primitive.ObjectID
 	Archived    bool
 	Config      ff_model.FeatureFlagConfig `bson:"config"`
 }

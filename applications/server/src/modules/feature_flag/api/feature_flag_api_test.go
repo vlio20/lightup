@@ -4,8 +4,8 @@ import (
 	"lightup/src/common/db"
 	"lightup/src/common/http"
 	app_model "lightup/src/common/model"
-	"lightup/src/modules/feature_flag/dal"
 	ff_dto "lightup/src/modules/feature_flag/dto"
+	"lightup/src/modules/feature_flag/ff_dal"
 	"lightup/src/modules/feature_flag/model"
 	"testing"
 
@@ -18,7 +18,7 @@ var ffMock = genFeatureFlagEntity()
 type FeatureFlagBlMock struct {
 }
 
-func (bl *FeatureFlagBlMock) GetFeatureFlagById(id primitive.ObjectID) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagBlMock) GetFeatureFlagById(id primitive.ObjectID) (*ff_dal.FeatureFlagEntity, error) {
 	if id == ffMock.ID {
 		return ffMock, nil
 	}
@@ -26,20 +26,20 @@ func (bl *FeatureFlagBlMock) GetFeatureFlagById(id primitive.ObjectID) (*dal.Fea
 	return nil, nil
 }
 
-func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagInput) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagBlMock) CreateFeatureFlag(input *model.CreateFeatureFlagInput) (*ff_dal.FeatureFlagEntity, error) {
 	return ffMock, nil
 }
 
-func (bl *FeatureFlagBlMock) GetFeatureFlag(accountId primitive.ObjectID, serviceId primitive.ObjectID, name string) (*dal.FeatureFlagEntity, error) {
+func (bl *FeatureFlagBlMock) GetFeatureFlag(accountId primitive.ObjectID, name string) (*ff_dal.FeatureFlagEntity, error) {
 	return ffMock, nil
 }
 
-func genFeatureFlagEntity() *dal.FeatureFlagEntity {
-	return &dal.FeatureFlagEntity{
+func genFeatureFlagEntity() *ff_dal.FeatureFlagEntity {
+	return &ff_dal.FeatureFlagEntity{
 		BaseEntity: db.BaseEntity{
 			ID: primitive.NewObjectID(),
 		},
-		ServiceID:   primitive.NewObjectID(),
+		Tags:        []primitive.ObjectID{primitive.NewObjectID()},
 		Name:        "name",
 		Description: "description",
 		Archived:    false,
@@ -71,9 +71,9 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 	assert.Nil(t, res)
 }
 
-func comperEntityAndDto(t *testing.T, entity *dal.FeatureFlagEntity, dto *ff_dto.FeatureFlagDto) {
+func comperEntityAndDto(t *testing.T, entity *ff_dal.FeatureFlagEntity, dto *ff_dto.FeatureFlagDto) {
 	assert.Equal(t, entity.ID, dto.ID)
-	assert.Equal(t, entity.ServiceID, dto.ServiceID)
+	assert.Equal(t, entity.Tags, dto.Tags)
 	assert.Equal(t, entity.AccountID, dto.AccountID)
 	assert.Equal(t, entity.Name, dto.Name)
 	assert.Equal(t, entity.Description, dto.Description)

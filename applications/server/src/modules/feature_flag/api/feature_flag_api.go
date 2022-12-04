@@ -35,7 +35,7 @@ func (api *FeatureFlagApi) GetFeatureFlagById(id primitive.ObjectID) (*dto.Featu
 }
 
 func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
-	exisistingFeatureFlag, err := api.featureFlagBl.GetFeatureFlag(accountID, createDto.ServiceID, createDto.Name)
+	exisistingFeatureFlag, err := api.featureFlagBl.GetFeatureFlag(accountID, createDto.Name)
 
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, creat
 		AccountID:   accountID,
 		Name:        createDto.Name,
 		Description: createDto.Description,
-		ServiceID:   createDto.ServiceID,
+		Tags:        createDto.Tags,
 		Archived:    false,
 		Config:      createDto.Config,
 	}

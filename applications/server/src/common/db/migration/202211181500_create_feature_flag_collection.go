@@ -21,10 +21,12 @@ var CreateFeatureFlagMigration = &Migration{
 			{
 				Keys: bson.D{
 					{Key: "accountId", Value: 1},
-					{Key: "serviceId", Value: 1},
 					{Key: "name", Value: -1},
 				},
 				Options: options.Index().SetUnique(true),
+			},
+			{
+				Keys: bson.D{{Key: "tags", Value: 1}},
 			},
 			{
 				Keys: bson.D{{Key: "updatedAt", Value: -1}},
