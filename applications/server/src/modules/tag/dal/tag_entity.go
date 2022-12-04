@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ServiceEntity struct {
+type TagEntity struct {
 	db.BaseEntity `bson:",inline"`
 	AccountID     primitive.ObjectID `bson:"accountId, omitempty"`
 	Name          string             `bson:"name, omitempty"`

@@ -9,10 +9,10 @@ import (
 )
 
 var CreateServiceMigration = &Migration{
-	Name:      "create_service_collection",
+	Name:      "create_tag_collection",
 	CreatedAt: 202211261330,
 	Up: func(DB *mongo.Database) {
-		CreateCollection("service", DB)
+		CreateCollection("tag", DB)
 
 		indexModel := []mongo.IndexModel{
 			{
@@ -33,6 +33,6 @@ var CreateServiceMigration = &Migration{
 			},
 		}
 
-		DB.Collection("service").Indexes().CreateMany(context.Background(), indexModel)
+		DB.Collection("tag").Indexes().CreateMany(context.Background(), indexModel)
 	},
 }

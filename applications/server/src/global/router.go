@@ -4,8 +4,8 @@ import (
 	"lightup/src/common/config"
 	account_ctrl "lightup/src/modules/account/ctrl"
 	ff_ctrl "lightup/src/modules/feature_flag/ctrl"
-	service_ctrl "lightup/src/modules/service/ctrl"
 	serving_ctrl "lightup/src/modules/serving/ctrl"
+	tag_ctrl "lightup/src/modules/tag/ctrl"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +32,7 @@ func InitRouter() {
 	v1 := route.Group("api/v1")
 	{
 		ff_ctrl.New().Init(v1)
-		service_ctrl.New().Init(v1)
+		tag_ctrl.New().Init(v1)
 		account_ctrl.New().Init(v1)
 		serving_ctrl.New().Init(v1)
 	}
