@@ -44,6 +44,8 @@ func InitRouter() {
 			"message": "pong",
 		})
 	})
+
+	route.Use(gin.Recovery())
 	route.SetTrustedProxies([]string{})
 	route.Run(":" + strconv.Itoa(conf.Port))
 }

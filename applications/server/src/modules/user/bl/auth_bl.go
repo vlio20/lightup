@@ -18,6 +18,7 @@ type AuthImpl struct {
 
 type AuthBl interface {
 	CreateToken(email string, password string) (string, error)
+	GetUserByToken(token string) (*dal.UserEntity, error)
 }
 
 func NewAuth() *AuthImpl {
@@ -27,6 +28,11 @@ func NewAuth() *AuthImpl {
 		userRepo:  dal.New(),
 		hasher:    hasher.New(),
 	}
+}
+
+var invalidTokenError = http.Error{
+	StatusCode: 401,
+	Message:    "Invalid token",
 }
 
 func (impl *AuthImpl) CreateToken(email string, password string) (string, error) {
@@ -50,6 +56,34 @@ func (impl *AuthImpl) CreateToken(email string, password string) (string, error)
 	}
 
 	return token, nil
+}
+
+func (impl *AuthImpl) GetUserByToken(tokenStr string) (*dal.UserEntity, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, invalidTokenError
+		}
+
+		return impl.jwtSecret, nil
+	})
+
+	if err != nil {
+		return nil, invalidTokenError
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if ok == false {
+		return nil, invalidTokenError
+	}
+
+	userId, ok := claims["userId"].(string)
+
+	if ok == false {
+		return nil, invalidTokenError
+	}
+
+	return impl.userRepo.FindByStrID(userId)
 }
 
 func (impl *AuthImpl) createUserJwtToken(user *dal.UserEntity) (string, error) {

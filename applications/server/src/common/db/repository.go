@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	logging "lightup/src/common/log"
 	"time"
 
@@ -27,14 +28,6 @@ type Repository[T any] struct {
 	DB         *mongo.Database
 	Collection *mongo.Collection
 	logger     logging.Logger
-}
-
-func NewRepository[T any](db *mongo.Database, collection string) *Repository[T] {
-	return &Repository[T]{
-		DB:         db,
-		Collection: db.Collection(collection),
-		logger:     logging.GetLogger("Repository_" + collection),
-	}
 }
 
 func (r *Repository[T]) StrIdToObjectID(id string) primitive.ObjectID {
@@ -77,6 +70,16 @@ func (r *Repository[T]) GetByObjectId(objectId *primitive.ObjectID) (*T, error) 
 	}
 
 	return &entity, nil
+}
+
+func (r *Repository[T]) FindByStrID(id string) (*T, error) {
+	objectID := r.StrIdToObjectID(id)
+
+	if objectID == primitive.NilObjectID {
+		return nil, errors.New("invalid entity id")
+	}
+
+	return r.GetByObjectId(&objectID)
 }
 
 func (r *Repository[T]) FindOne(filter bson.M) (*T, error) {

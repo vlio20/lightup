@@ -3,16 +3,13 @@ package router
 import (
 	"lightup/src/common/http"
 	"lightup/src/common/log"
+	app_model "lightup/src/common/model"
+	guard "lightup/src/global/auth"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-type ReqContext struct {
-	*gin.Context
-	AccountID primitive.ObjectID
-}
 
 func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err error) {
 	var httpError http.Error
@@ -33,7 +30,7 @@ func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err 
 	c.JSON(200, dto)
 }
 
-func HandleRequest[T interface{}](inv func(*ReqContext) (T, error)) func(*gin.Context) {
+func HandleRequest[T interface{}](inv func(ctx *app_model.ReqContext) (T, error)) func(*gin.Context) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {
@@ -43,7 +40,7 @@ func HandleRequest[T interface{}](inv func(*ReqContext) (T, error)) func(*gin.Co
 	}
 }
 
-func HandleBodyBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
+func HandleBodyBounding[T interface{}, R interface{}](inv func(*app_model.ReqContext, *T) (*R, error)) func(*gin.Context) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {
@@ -65,12 +62,21 @@ func HandleBodyBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) 
 	}
 }
 
-func HandleQueryBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) (*R, error)) func(*gin.Context) {
+func HandleQueryBounding[T interface{}, R interface{}](
+	inv func(*app_model.ReqContext, *T) (*R, error),
+	guards []guard.Guard) func(*gin.Context,
+) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {
 		var queryDto T
 		appContext := getRequestContext(c)
+		err := validateGuards(appContext, guards)
+
+		if err != nil {
+			handleReturn[T](logger, c, nil, err)
+			return
+		}
 
 		if err := c.BindQuery(&queryDto); err != nil {
 			handleReturn[R](logger, c, nil, &http.Error{
@@ -87,7 +93,7 @@ func HandleQueryBounding[T interface{}, R interface{}](inv func(*ReqContext, *T)
 	}
 }
 
-func GetParamAsObjectID(c *ReqContext, key string) (*primitive.ObjectID, *http.Error) {
+func GetParamAsObjectID(c *app_model.ReqContext, key string) (*primitive.ObjectID, *http.Error) {
 	id := c.Param(key)
 
 	objId, err := primitive.ObjectIDFromHex(id)
@@ -109,9 +115,23 @@ func extractValidationError(msg string) string {
 	return parts[len(parts)-1]
 }
 
-func getRequestContext(c *gin.Context) *ReqContext {
-	return &ReqContext{
+func getRequestContext(c *gin.Context) *app_model.ReqContext {
+	return &app_model.ReqContext{
 		Context:   c,
 		AccountID: primitive.NewObjectID(),
 	}
+}
+
+func validateGuards(c *app_model.ReqContext, guards []guard.Guard) error {
+	if guards == nil {
+		return nil
+	}
+
+	for _, g := range guards {
+		if err := g.IsActive(c); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
