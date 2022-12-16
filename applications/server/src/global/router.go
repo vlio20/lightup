@@ -6,6 +6,7 @@ import (
 	ff_ctrl "lightup/src/modules/feature_flag/ctrl"
 	serving_ctrl "lightup/src/modules/serving/ctrl"
 	tag_ctrl "lightup/src/modules/tag/ctrl"
+	user_ctrl "lightup/src/modules/user/ctrl"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,7 @@ func InitRouter() {
 		ff_ctrl.New().Init(v1)
 		tag_ctrl.New().Init(v1)
 		account_ctrl.New().Init(v1)
+		user_ctrl.New().Init(v1)
 		serving_ctrl.New().Init(v1)
 	}
 

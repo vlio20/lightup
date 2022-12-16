@@ -28,21 +28,21 @@ func (api *FeatureFlagApi) GetFeatureFlagById(id primitive.ObjectID) (*dto.Featu
 	}
 
 	if entity == nil {
-		return nil, &http.HttpError{StatusCode: 404, Message: "Feature flag not found"}
+		return nil, &http.Error{StatusCode: 404, Message: "Feature flag not found"}
 	}
 
 	return dto.CreateFromEntity(entity), nil
 }
 
 func (api *FeatureFlagApi) CreateFeatureFlag(accountID primitive.ObjectID, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
-	exisistingFeatureFlag, err := api.featureFlagBl.GetFeatureFlag(accountID, createDto.Name)
+	existingFeatureFlag, err := api.featureFlagBl.GetFeatureFlag(accountID, createDto.Name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if exisistingFeatureFlag != nil {
-		return nil, &http.HttpError{StatusCode: 409, Message: "Feature flag already exists"}
+	if existingFeatureFlag != nil {
+		return nil, &http.Error{StatusCode: 409, Message: "Feature flag already exists"}
 	}
 
 	input := &model.CreateFeatureFlagInput{

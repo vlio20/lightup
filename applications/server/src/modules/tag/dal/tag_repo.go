@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"lightup/src/common/db"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -28,5 +29,5 @@ func (repo *TagRepo) GetTag(accountId primitive.ObjectID, name string) (*TagEnti
 		Name:      name,
 	}
 
-	return repo.FindOne(entity)
+	return repo.FindOne(bson.M{"accountId": entity.AccountID, "name": entity.Name})
 }

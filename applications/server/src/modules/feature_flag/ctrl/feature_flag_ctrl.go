@@ -34,6 +34,7 @@ func (ctrl *FeatureFlagController) createFeatureFlag(c *router.ReqContext, creat
 
 func (ctrl *FeatureFlagController) getFeatureFlagById(c *router.ReqContext) (*dto.FeatureFlagDto, error) {
 	id, err := router.GetParamAsObjectID(c, "id")
+
 	if err != nil {
 		return nil, err
 	}

@@ -28,7 +28,7 @@ func (api *AccountApi) GetAccountById(id primitive.ObjectID) (*dto.AccountDto, e
 	}
 
 	if entity == nil {
-		return nil, &http.HttpError{StatusCode: 404, Message: "Feature flag not found"}
+		return nil, &http.Error{StatusCode: 404, Message: "Feature flag not found"}
 	}
 
 	return dto.CreateFromEntity(entity), nil

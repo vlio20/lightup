@@ -28,7 +28,7 @@ func (ctrl *TagController) Init(r *gin.RouterGroup) {
 	r.POST("/tags", router.HandleBodyBounding(ctrl.create))
 }
 
-func (ctrl *TagController) create(c *router.ReqContext, createDto *dto.CreateTagDto) (*app_dto.CreatedEntityDto, error) {
+func (ctrl *TagController) create(_ *router.ReqContext, createDto *dto.CreateTagDto) (*app_dto.CreatedEntityDto, error) {
 	accountID := primitive.NewObjectID()
 
 	return ctrl.api.CreateTag(accountID, createDto)

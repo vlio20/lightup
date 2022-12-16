@@ -7,6 +7,8 @@ require (
 	github.com/spf13/viper v1.14.0
 )
 
+require github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect

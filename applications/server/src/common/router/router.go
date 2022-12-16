@@ -15,11 +15,11 @@ type ReqContext struct {
 }
 
 func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err error) {
-	var httpError *http.HttpError
+	var httpError http.Error
 
 	if err != nil {
-		if _, ok := err.(*http.HttpError); ok {
-			httpError = err.(*http.HttpError)
+		if _, ok := err.(http.Error); ok {
+			httpError = err.(http.Error)
 		} else {
 			httpError = http.GetHttpServerError(err)
 		}
@@ -51,7 +51,7 @@ func HandleBodyBounding[T interface{}, R interface{}](inv func(*ReqContext, *T) 
 		appContext := getRequestContext(c)
 
 		if err := c.ShouldBind(&dto); err != nil {
-			handleReturn[R](logger, c, nil, &http.HttpError{
+			handleReturn[R](logger, c, nil, &http.Error{
 				StatusCode:    400,
 				Message:       extractValidationError(err.Error()),
 				OriginalError: err,
@@ -73,7 +73,7 @@ func HandleQueryBounding[T interface{}, R interface{}](inv func(*ReqContext, *T)
 		appContext := getRequestContext(c)
 
 		if err := c.BindQuery(&queryDto); err != nil {
-			handleReturn[R](logger, c, nil, &http.HttpError{
+			handleReturn[R](logger, c, nil, &http.Error{
 				StatusCode:    400,
 				Message:       extractValidationError(err.Error()),
 				OriginalError: err,
@@ -87,13 +87,13 @@ func HandleQueryBounding[T interface{}, R interface{}](inv func(*ReqContext, *T)
 	}
 }
 
-func GetParamAsObjectID(c *ReqContext, key string) (*primitive.ObjectID, *http.HttpError) {
+func GetParamAsObjectID(c *ReqContext, key string) (*primitive.ObjectID, *http.Error) {
 	id := c.Param(key)
 
 	objId, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		return nil, &http.HttpError{
+		return nil, &http.Error{
 			StatusCode:    400,
 			Message:       "Invalid ID: " + id,
 			OriginalError: nil,

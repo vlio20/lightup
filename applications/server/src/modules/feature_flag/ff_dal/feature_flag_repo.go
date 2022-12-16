@@ -1,6 +1,7 @@
 package ff_dal
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"lightup/src/common/db"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -28,5 +29,5 @@ func (repo *FeatureFlagRepo) GetFeatureFlag(accountId primitive.ObjectID, name s
 		Name:      name,
 	}
 
-	return repo.FindOne(entity)
+	return repo.FindOne(bson.M{"accountId": entity.AccountID, "name": entity.Name})
 }

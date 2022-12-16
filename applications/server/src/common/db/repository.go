@@ -37,11 +37,11 @@ func NewRepository[T any](db *mongo.Database, collection string) *Repository[T] 
 	}
 }
 
-func (repo *Repository[T]) StrIdToObjectID(id string) primitive.ObjectID {
+func (r *Repository[T]) StrIdToObjectID(id string) primitive.ObjectID {
 	objectId, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		repo.logger.Error("StrIdToObjectID is not valid, provided, id: "+id, err)
+		r.logger.Error("StrIdToObjectID is not valid, provided, id: "+id, err)
 		return primitive.NilObjectID
 	}
 
@@ -79,10 +79,15 @@ func (r *Repository[T]) GetByObjectId(objectId *primitive.ObjectID) (*T, error) 
 	return &entity, nil
 }
 
-func (r *Repository[T]) FindOne(filter interface{}) (*T, error) {
+func (r *Repository[T]) FindOne(filter bson.M) (*T, error) {
 	var entity T
+	filterMarshaled, err := bson.Marshal(filter)
 
-	err := r.Collection.FindOne(context.Background(), filter).Decode(&entity)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.Collection.FindOne(context.Background(), filterMarshaled).Decode(&entity)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {

@@ -28,7 +28,7 @@ func (api *TagApi) GetTagById(id primitive.ObjectID) (*dto.TagDto, error) {
 	}
 
 	if entity == nil {
-		return nil, &http.HttpError{StatusCode: 404, Message: "Feature flag not found"}
+		return nil, &http.Error{StatusCode: 404, Message: "Feature flag not found"}
 	}
 
 	return dto.CreateFromEntity(entity), nil
@@ -42,7 +42,7 @@ func (api *TagApi) CreateTag(accountID primitive.ObjectID, createDto *dto.Create
 	}
 
 	if exisistingTag != nil {
-		return nil, &http.HttpError{StatusCode: 409, Message: "Feature flag already exists"}
+		return nil, &http.Error{StatusCode: 409, Message: "Feature flag already exists"}
 	}
 
 	input := model.CreateTagModel{

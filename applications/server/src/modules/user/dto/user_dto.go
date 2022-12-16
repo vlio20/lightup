@@ -8,9 +8,10 @@ import (
 )
 
 type CreateUserDto struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
+	AccountID primitive.ObjectID `json:"accountId" binding:"required"`
+	Name      string             `json:"name" binding:"required"`
+	Email     string             `json:"email" binding:"required,email"`
+	Password  string             `json:"password" binding:"required,min=8"`
 }
 
 type UserDto struct {
@@ -29,4 +30,13 @@ func CreateFromEntity(entity *dal.UserEntity) *UserDto {
 		AccountID:     entity.AccountID,
 		Archived:      entity.Archived,
 	}
+}
+
+type CreateTokenDto struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type CreatedTokenDto struct {
+	Token string `json:"token"`
 }

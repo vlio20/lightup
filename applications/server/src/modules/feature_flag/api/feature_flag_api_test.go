@@ -67,7 +67,7 @@ func TestGetFeatureFlag_whenNotFound_returnAnError(t *testing.T) {
 
 	res, err := ffApi.GetFeatureFlagById(primitive.NewObjectID())
 
-	assert.Equal(t, err.(*http.HttpError).StatusCode, 404)
+	assert.Equal(t, err.(*http.Error).StatusCode, 404)
 	assert.Nil(t, res)
 }
 
