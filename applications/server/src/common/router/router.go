@@ -22,10 +22,10 @@ func handleReturn[T interface{}](logger log.Logger, c *gin.Context, dto *T, err 
 			httpError = err.(http.Error)
 		} else {
 			httpError = http.GetHttpServerError(err)
+			logger.Error(httpError.Message, ". error: ", err)
 		}
 
 		c.JSON(httpError.StatusCode, httpError)
-		logger.Error(httpError.Message, "error", err)
 
 		return
 	}

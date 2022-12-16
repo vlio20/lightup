@@ -10,7 +10,7 @@ import (
 )
 
 type AuthImpl struct {
-	jwtSecret string
+	jwtSecret []byte
 	log       log.Logger
 	userRepo  *dal.UserRepo
 	hasher    hasher.Hasher
@@ -22,7 +22,7 @@ type AuthBl interface {
 
 func NewAuth() *AuthImpl {
 	return &AuthImpl{
-		jwtSecret: "secret",
+		jwtSecret: []byte("secret"),
 		log:       log.GetLogger("AuthBl"),
 		userRepo:  dal.New(),
 		hasher:    hasher.New(),
