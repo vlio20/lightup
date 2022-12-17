@@ -7,6 +7,7 @@ import (
 	guard "lightup/src/global/auth"
 	"lightup/src/modules/serving/api"
 	"lightup/src/modules/serving/dto"
+	"lightup/src/modules/serving/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +31,7 @@ func (ctrl *ServingController) Init(r *gin.RouterGroup) {
 
 func (ctrl *ServingController) getFeatureFlagState(
 	c *app_model.ReqContext,
-	query *dto.GetFeatureFlagStateParams) (*dto.FeatureFlagStateDto, error) {
-	return nil, nil
+	query *model.FlagStateParams,
+) (*dto.FeatureFlagStateDto, error) {
+	return ctrl.api.GetFeatureFlagState(c.AccountID, query, c.Request.URL.Query())
 }

@@ -21,6 +21,10 @@ type NumericMatchingRule struct {
 	Value    float64         `json:"value" bson:"value" binding:"required"`
 }
 
+func (r *NumericMatchingRule) GetKey() string {
+	return r.Key
+}
+
 func (r *NumericMatchingRule) IsMatch(strVal string) (bool, error) {
 	val, err := strconv.ParseFloat(strVal, 64)
 

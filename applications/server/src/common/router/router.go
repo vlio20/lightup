@@ -74,12 +74,12 @@ func HandleQueryBounding[T interface{}, R interface{}](
 		err := validateGuards(appContext, guards)
 
 		if err != nil {
-			handleReturn[T](logger, c, nil, err)
+			handleReturn[R](logger, c, nil, err)
 			return
 		}
 
 		if err := c.BindQuery(&queryDto); err != nil {
-			handleReturn[R](logger, c, nil, &http.Error{
+			handleReturn[R](logger, c, nil, http.Error{
 				StatusCode:    400,
 				Message:       extractValidationError(err.Error()),
 				OriginalError: err,
@@ -93,13 +93,13 @@ func HandleQueryBounding[T interface{}, R interface{}](
 	}
 }
 
-func GetParamAsObjectID(c *app_model.ReqContext, key string) (*primitive.ObjectID, *http.Error) {
+func GetParamAsObjectID(c *app_model.ReqContext, key string) (*primitive.ObjectID, error) {
 	id := c.Param(key)
 
 	objId, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
-		return nil, &http.Error{
+		return nil, http.Error{
 			StatusCode:    400,
 			Message:       "Invalid ID: " + id,
 			OriginalError: nil,

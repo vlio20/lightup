@@ -20,6 +20,10 @@ type StringFilteringRule struct {
 	Value    string         `json:"value" bson:"value" binding:"required"`
 }
 
+func (r *StringFilteringRule) GetKey() string {
+	return r.Key
+}
+
 func (r *StringFilteringRule) IsMatch(val string) (bool, error) {
 	switch r.Operator {
 	case StartsWith:

@@ -13,5 +13,6 @@ type Rule struct {
 }
 
 type MatchingRule interface {
+	GetKey() string
 	IsMatch(val string) (bool, error)
 }

@@ -11,7 +11,7 @@ import (
 
 type FeatureFlagImpl struct {
 	log             log.Logger
-	FeatureFlagRepo *ff_dal.FeatureFlagRepo
+	FeatureFlagRepo *ff_dal.FlagRepo
 }
 
 type FeatureFlagBl interface {
@@ -23,7 +23,7 @@ type FeatureFlagBl interface {
 func New() FeatureFlagBl {
 	return &FeatureFlagImpl{
 		log:             log.GetLogger("FeatureFlagBl"),
-		FeatureFlagRepo: ff_dal.NewFeatureFlagRepository(),
+		FeatureFlagRepo: ff_dal.NewFlagRepository(),
 	}
 }
 
