@@ -5,6 +5,7 @@ import (
 	"lightup/src/common/log"
 	app_model "lightup/src/common/model"
 	"lightup/src/common/router"
+	"lightup/src/global/guard"
 	"lightup/src/modules/account/api"
 	"lightup/src/modules/account/dto"
 
@@ -25,8 +26,9 @@ func New() *AccountController {
 }
 
 func (ctrl *AccountController) Init(r *gin.RouterGroup) {
+	guards := []guard.Guard{guard.NewAuthGuard()}
 	r.GET("/accounts/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/accounts", router.HandleBodyBounding(ctrl.create))
+	r.POST("/accounts", router.HandleBodyBounding(ctrl.create, guards))
 }
 
 func (ctrl *AccountController) create(c *app_model.ReqContext, createDto *dto.CreateAccountDto) (*app_dto.CreatedEntityDto, error) {

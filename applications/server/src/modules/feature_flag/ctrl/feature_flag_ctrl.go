@@ -5,11 +5,11 @@ import (
 	"lightup/src/common/log"
 	app_model "lightup/src/common/model"
 	"lightup/src/common/router"
+	"lightup/src/global/guard"
 	"lightup/src/modules/feature_flag/api"
 	"lightup/src/modules/feature_flag/dto"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type FeatureFlagController struct {
@@ -25,12 +25,16 @@ func New() *FeatureFlagController {
 }
 
 func (ctrl *FeatureFlagController) Init(r *gin.RouterGroup) {
+	guards := []guard.Guard{guard.NewAuthGuard()}
 	r.GET("/featureFlags/:id", router.HandleRequest(ctrl.getFeatureFlagById))
-	r.POST("/featureFlags", router.HandleBodyBounding(ctrl.createFeatureFlag))
+	r.POST("/featureFlags", router.HandleBodyBounding(ctrl.createFeatureFlag, guards))
 }
 
-func (ctrl *FeatureFlagController) createFeatureFlag(c *app_model.ReqContext, createDto *dto.CreateFeatureFlagDto) (*app_dto.CreatedEntityDto, error) {
-	return ctrl.api.CreateFeatureFlag(primitive.NewObjectID(), createDto)
+func (ctrl *FeatureFlagController) createFeatureFlag(
+	c *app_model.ReqContext,
+	createDto *dto.CreateFeatureFlagDto,
+) (*app_dto.CreatedEntityDto, error) {
+	return ctrl.api.CreateFeatureFlag(c.AccountID, createDto)
 }
 
 func (ctrl *FeatureFlagController) getFeatureFlagById(c *app_model.ReqContext) (*dto.FeatureFlagDto, error) {

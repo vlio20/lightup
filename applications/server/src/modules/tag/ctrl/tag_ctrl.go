@@ -5,6 +5,7 @@ import (
 	"lightup/src/common/log"
 	app_model "lightup/src/common/model"
 	"lightup/src/common/router"
+	"lightup/src/global/guard"
 	"lightup/src/modules/tag/api"
 	"lightup/src/modules/tag/dto"
 
@@ -25,8 +26,9 @@ func New() *TagController {
 }
 
 func (ctrl *TagController) Init(r *gin.RouterGroup) {
+	guards := []guard.Guard{guard.NewAuthGuard()}
 	r.GET("/tags/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/tags", router.HandleBodyBounding(ctrl.create))
+	r.POST("/tags", router.HandleBodyBounding(ctrl.create, guards))
 }
 
 func (ctrl *TagController) create(_ *app_model.ReqContext, createDto *dto.CreateTagDto) (*app_dto.CreatedEntityDto, error) {

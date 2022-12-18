@@ -9,6 +9,7 @@ type FeatureFlagConfig struct {
 	Segment    MatchingSegment `json:"segment" bson:"segment" binding:"required"`
 	Identifier string          `json:"identifier" bson:"identifier" binding:"required"`
 	Percentage float32         `bson:"percentage" json:"percentage" binding:"required,min=0,max=1"`
+	Persistent bool            `bson:"persistent" json:"persistent" binding:"required"`
 }
 
 type SegmentOperator string

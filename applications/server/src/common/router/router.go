@@ -40,12 +40,21 @@ func HandleRequest[T interface{}](inv func(ctx *app_model.ReqContext) (T, error)
 	}
 }
 
-func HandleBodyBounding[T interface{}, R interface{}](inv func(*app_model.ReqContext, *T) (*R, error)) func(*gin.Context) {
+func HandleBodyBounding[T interface{}, R interface{}](
+	inv func(*app_model.ReqContext, *T) (*R, error),
+	guards []guard.Guard,
+) func(*gin.Context) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {
 		var dto T
 		appContext := getRequestContext(c)
+		err := validateGuards(appContext, guards)
+
+		if err != nil {
+			handleReturn[R](logger, c, nil, err)
+			return
+		}
 
 		if err := c.ShouldBind(&dto); err != nil {
 			handleReturn[R](logger, c, nil, &http.Error{
@@ -64,8 +73,8 @@ func HandleBodyBounding[T interface{}, R interface{}](inv func(*app_model.ReqCon
 
 func HandleQueryBounding[T interface{}, R interface{}](
 	inv func(*app_model.ReqContext, *T) (*R, error),
-	guards []guard.Guard) func(*gin.Context,
-) {
+	guards []guard.Guard,
+) func(*gin.Context) {
 	logger := log.GetLogger("router")
 
 	return func(c *gin.Context) {

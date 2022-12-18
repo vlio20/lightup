@@ -18,7 +18,10 @@ func New() *ServingApi {
 	}
 }
 
-func (api *ServingApi) GetFeatureFlagState(accountID primitive.ObjectID, flagParams *model.FlagStateParams, query url.Values) (*dto.FeatureFlagStateDto, error) {
+func (api *ServingApi) GetFeatureFlagState(
+	accountID primitive.ObjectID, flagParams *model.FlagStateParams,
+	query url.Values,
+) (*dto.FeatureFlagStateDto, error) {
 	state, err := api.servingBl.GetFeatureFlagState(accountID, flagParams, query)
 
 	if err != nil {

@@ -25,11 +25,11 @@ func New() *UserController {
 
 func (ctrl *UserController) Init(r *gin.RouterGroup) {
 	r.GET("/users/:id", router.HandleRequest(ctrl.getById))
-	r.POST("/users", router.HandleBodyBounding(ctrl.create))
-	r.POST("/users/tokens", router.HandleBodyBounding(ctrl.createToken))
+	r.POST("/users", router.HandleBodyBounding(ctrl.create, nil))
+	r.POST("/users/tokens", router.HandleBodyBounding(ctrl.createToken, nil))
 }
 
-func (ctrl *UserController) create(c *app_model.ReqContext, createDto *dto.CreateUserDto) (*app_dto.CreatedEntityDto, error) {
+func (ctrl *UserController) create(_ *app_model.ReqContext, createDto *dto.CreateUserDto) (*app_dto.CreatedEntityDto, error) {
 	return ctrl.api.CreateUser(createDto)
 }
 
@@ -42,6 +42,6 @@ func (ctrl *UserController) getById(c *app_model.ReqContext) (*dto.UserDto, erro
 	return ctrl.api.GetUserById(*id)
 }
 
-func (ctrl *UserController) createToken(context *app_model.ReqContext, t *dto.CreateTokenDto) (*dto.CreatedTokenDto, error) {
+func (ctrl *UserController) createToken(_ *app_model.ReqContext, t *dto.CreateTokenDto) (*dto.CreatedTokenDto, error) {
 	return ctrl.api.CreateToken(t)
 }
