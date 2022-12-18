@@ -9,9 +9,5 @@ import (
 type ReqContext struct {
 	*gin.Context
 	AccountID primitive.ObjectID
-	user      *dal.UserEntity
-}
-
-func (c *ReqContext) SetUser(user *dal.UserEntity) {
-	c.user = user
+	User      *dal.UserEntity
 }

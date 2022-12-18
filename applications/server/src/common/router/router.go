@@ -4,7 +4,7 @@ import (
 	"lightup/src/common/http"
 	"lightup/src/common/log"
 	app_model "lightup/src/common/model"
-	guard "lightup/src/global/auth"
+	guard "lightup/src/global/guard"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -118,7 +118,7 @@ func extractValidationError(msg string) string {
 func getRequestContext(c *gin.Context) *app_model.ReqContext {
 	return &app_model.ReqContext{
 		Context:   c,
-		AccountID: primitive.NewObjectID(),
+		AccountID: primitive.NilObjectID,
 	}
 }
 

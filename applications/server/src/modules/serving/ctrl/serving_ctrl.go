@@ -4,7 +4,7 @@ import (
 	"lightup/src/common/log"
 	app_model "lightup/src/common/model"
 	"lightup/src/common/router"
-	guard "lightup/src/global/auth"
+	guard "lightup/src/global/guard"
 	"lightup/src/modules/serving/api"
 	"lightup/src/modules/serving/dto"
 	"lightup/src/modules/serving/model"

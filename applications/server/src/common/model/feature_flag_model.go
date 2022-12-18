@@ -1,10 +1,14 @@
 package app_model
 
-import "lightup/src/common/matching_rule"
+import (
+	"lightup/src/common/http"
+	"lightup/src/common/matching_rule"
+)
 
 type FeatureFlagConfig struct {
 	Segment    MatchingSegment `json:"segment" bson:"segment" binding:"required"`
-	Percentage float32         `bson:"percentage" json:"percentage" binding:"required,min=0,max=100"`
+	Identifier string          `json:"identifier" bson:"identifier" binding:"required"`
+	Percentage float32         `bson:"percentage" json:"percentage" binding:"required,min=0,max=1"`
 }
 
 type SegmentOperator string
@@ -20,41 +24,48 @@ type SegmentNesting struct {
 }
 
 type MatchingSegment struct {
-	Name    string                     `json:"name" bson:"name"`
-	Rule    matching_rule.MatchingRule `json:"rule" bson:"rule" binding:"required"`
-	Nesting SegmentNesting             `json:"nesting" bson:"nesting"`
+	Name    string              `json:"name" bson:"name"`
+	Rule    *matching_rule.Rule `json:"rule" bson:"rule"`
+	Nesting *SegmentNesting     `json:"nesting" bson:"nesting"`
 }
 
-func (s *MatchingSegment) IsMatch(val map[string][]string) (bool, error) {
+func (s *MatchingSegment) IsMatch(valuesMap map[string][]string) (bool, error) {
 	var match = false
 	var err error
 
-	if s.Rule == nil {
-		vals := val[s.Rule.GetKey()]
+	if s.Rule != nil {
+		vals := valuesMap[s.Rule.Key]
 
 		if len(vals) == 0 {
-			return false, nil
+			return false, http.Error{
+				StatusCode: 400,
+				Message:    "Missing key: " + s.Rule.Key,
+			}
 		}
 
 		val := vals[0]
 
 		match, err = s.Rule.IsMatch(val)
+	} else {
+		match = true
 	}
 
-	if s.Nesting.Segment != nil {
-		var nestedMatch bool
+	if s.Nesting != nil {
+		if s.Nesting.Segment != nil {
+			var nestedMatch bool
 
-		nestedMatch, err = s.Nesting.Segment.IsMatch(val)
+			nestedMatch, err = s.Nesting.Segment.IsMatch(valuesMap)
 
-		if err != nil {
-			return false, err
-		}
+			if err != nil {
+				return false, err
+			}
 
-		switch s.Nesting.Operator {
-		case Or:
-			match = match || nestedMatch
-		case And:
-			match = match && nestedMatch
+			switch s.Nesting.Operator {
+			case Or:
+				match = match || nestedMatch
+			case And:
+				match = match && nestedMatch
+			}
 		}
 	}
 

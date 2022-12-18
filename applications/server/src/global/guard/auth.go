@@ -6,7 +6,7 @@ import (
 	"lightup/src/modules/user/bl"
 )
 
-var missingToken = http.Error{
+var missingTokenError = http.Error{
 	StatusCode: 401,
 	Message:    "Token is missing",
 }
@@ -25,7 +25,7 @@ func (g *AuthGuard) IsActive(c *app_model.ReqContext) error {
 	token := c.GetHeader("X-Lightup-Token")
 
 	if token == "" {
-		return missingToken
+		return missingTokenError
 	}
 
 	user, err := g.authBl.GetUserByToken(token)
@@ -34,7 +34,15 @@ func (g *AuthGuard) IsActive(c *app_model.ReqContext) error {
 		return err
 	}
 
-	c.SetUser(user)
+	if user == nil {
+		return http.Error{
+			StatusCode: 409,
+			Message:    "Invalid Token",
+		}
+	}
+
+	c.User = user
+	c.AccountID = user.AccountID
 
 	return nil
 }
