@@ -16,10 +16,10 @@ func TestHasher(t *testing.T) {
 
 func Test_HashStringToFloat(t *testing.T) {
 	hasher := New()
-	res1 := hasher.HashStringToFloat("123", "asda2d")
-	res2 := hasher.HashStringToFloat("123", "asda2d")
-	res3 := hasher.HashStringToFloat("124", "asda2d")
-	res4 := hasher.HashStringToFloat("123", "asda3d")
+	res1, _ := hasher.HashStringToFloat("123", "asda2d")
+	res2, _ := hasher.HashStringToFloat("123", "asda2d")
+	res3, _ := hasher.HashStringToFloat("124", "asda2d")
+	res4, _ := hasher.HashStringToFloat("123", "asda3d")
 
 	assert.Equal(t, res1, res2)
 	assert.NotEqual(t, res1, res3)
