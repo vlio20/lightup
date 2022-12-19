@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -41,7 +42,8 @@ func UnmarshalKey(key string, rawVal interface{}) {
 
 func getBasePath() string {
 	f, _ := os.Getwd()
-	return f
+
+	return filepath.Dir(f)
 }
 
 func getEnv() string {

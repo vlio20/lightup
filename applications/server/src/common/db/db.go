@@ -53,10 +53,6 @@ func Init() {
 	RunMigrations()
 }
 
-func GetDBClient() *mongo.Client {
-	return client
-}
-
 func GetDB() *mongo.Database {
 	return client.Database(dbConf.DBName)
 }
