@@ -43,9 +43,7 @@ func genFeatureFlagEntity() *ff_dal.FeatureFlagEntity {
 		Name:        "name",
 		Description: "description",
 		Archived:    false,
-		Config: app_model.FeatureFlagConfig{
-			MatchingSegments: []app_model.MatchingSegment{},
-		},
+		Config:      app_model.FeatureFlagConfig{},
 	}
 }
 
